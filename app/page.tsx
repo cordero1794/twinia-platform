@@ -101,7 +101,7 @@ export default function Home() {
         formData.append("dataset_files", file);
       });
 
-      const response = await fetch("http://localhost:8000/create-experiment", {
+      const response = await fetch("https://twinia-backend.onrender.com/create-experiment", {
         method: "POST",
         body: formData,
       });
