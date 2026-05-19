@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "prompt": "Robot cuadrúpedo caminando en un parque urbano con obstáculos reales y líneas podotáctiles.",
+  "input": "Isaac Sim video or uploaded dataset",
+  "output": "synthetic dataset"
+}

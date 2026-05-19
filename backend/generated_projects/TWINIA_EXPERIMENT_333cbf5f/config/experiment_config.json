@@ -1,0 +1,16 @@
+{
+  "experiment_id": "333cbf5f",
+  "robot": "TWINIA",
+  "ia": "YOLO",
+  "escenario": "Parque urbano",
+  "sensor": "RGB",
+  "cosmos": true,
+  "cosmos_prompt": "Robot cuadrúpedo caminando en un parque urbano con obstáculos reales y líneas podotáctiles.",
+  "modo_trabajo": "Generar dataset sintético",
+  "dataset_size": 1000,
+  "training_epochs": 50,
+  "validation_mode": "Sim-to-Real",
+  "robot_files": [],
+  "environment_files": [],
+  "dataset_files": []
+}
