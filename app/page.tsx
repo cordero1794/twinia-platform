@@ -1,7 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import RobotViewer from "../components/RobotViewer";
+import dynamic from "next/dynamic";
+
+  const RobotViewer = dynamic(() => import("../components/RobotViewer"), {
+    ssr: false,
+  });
 
 export default function Home() {
   const [robot, setRobot] = useState("TWINIA");
