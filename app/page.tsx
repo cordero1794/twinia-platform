@@ -119,7 +119,7 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       setBackendStatus("Error conectando con el backend");
-      alert("Error conectando con backend. Revisa que FastAPI esté corriendo en http://localhost:8000");
+     alert("Error conectando con el backend online de Render.");
     }
   };
 

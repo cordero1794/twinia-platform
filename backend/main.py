@@ -1,9 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
+import uuid
 
-app = FastAPI()
+app = FastAPI(title="TWINIA Backend")
 
-# Permitir frontend Vercel
 origins = [
     "http://localhost:3000",
     "https://twinia-platform.vercel.app",
@@ -19,16 +19,35 @@ app.add_middleware(
 
 @app.get("/")
 def home():
-    return {
-        "message": "TWINIA Backend Online"
-    }
+    return {"message": "TWINIA Backend Online"}
 
-@app.post("/generate")
-def generate():
+@app.post("/create-experiment")
+async def create_experiment(
+    robot: str = Form(...),
+    ia: str = Form(...),
+    escenario: str = Form(...),
+    sensor: str = Form(...),
+    cosmos: str = Form(...),
+    cosmos_prompt: str = Form(...),
+    modo_trabajo: str = Form(...),
+    dataset_size: int = Form(...),
+    training_epochs: int = Form(...),
+    validation_mode: str = Form(...),
+):
+    experiment_id = str(uuid.uuid4())[:8]
+
     return {
         "status": "success",
-        "message": "Experimento generado correctamente",
-        "dataset": "1000 muestras",
-        "model": "YOLOv8",
-        "simulator": "Isaac Sim",
+        "message": "Experimento creado correctamente",
+        "experiment_id": experiment_id,
+        "robot": robot,
+        "ia": ia,
+        "escenario": escenario,
+        "sensor": sensor,
+        "cosmos": cosmos,
+        "cosmos_prompt": cosmos_prompt,
+        "modo_trabajo": modo_trabajo,
+        "dataset_size": dataset_size,
+        "training_epochs": training_epochs,
+        "validation_mode": validation_mode,
     }
