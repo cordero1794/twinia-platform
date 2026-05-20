@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
 import uuid
 from datetime import datetime
 
@@ -69,3 +70,53 @@ def list_experiments():
         "total": len(experiments),
         "experiments": experiments,
     }
+
+@app.get("/report/{experiment_id}", response_class=PlainTextResponse)
+def generate_report(experiment_id: str):
+    experiment = next(
+        (exp for exp in experiments if exp["experiment_id"] == experiment_id),
+        None
+    )
+
+    if not experiment:
+        raise HTTPException(status_code=404, detail="Experimento no encontrado")
+
+    report = f"""
+# REPORTE EXPERIMENTAL TWINIA
+
+## Identificación
+
+ID del experimento: {experiment["experiment_id"]}
+Fecha de creación: {experiment["created_at"]}
+
+## Configuración robótica
+
+Robot seleccionado: {experiment["robot"]}
+Ambiente: {experiment["escenario"]}
+Sensor: {experiment["sensor"]}
+
+## Inteligencia artificial
+
+Modelo IA: {experiment["ia"]}
+Modo de trabajo: {experiment["modo_trabajo"]}
+Épocas de entrenamiento: {experiment["training_epochs"]}
+Tamaño del dataset: {experiment["dataset_size"]} muestras
+
+## Validación
+
+Tipo de validación: {experiment["validation_mode"]}
+
+## NVIDIA Cosmos
+
+Cosmos activado: {experiment["cosmos"]}
+
+Prompt de generación sintética:
+
+{experiment["cosmos_prompt"]}
+
+## Interpretación
+
+Este experimento fue configurado desde TWINIA Platform como una plantilla para procesos de IA física, gemelos digitales, generación de datos sintéticos y validación Sim-to-Real.
+"""
+
+    return report
