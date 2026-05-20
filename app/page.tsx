@@ -3,9 +3,11 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 
-  const RobotViewer = dynamic(() => import("../components/RobotViewer"), {
-    ssr: false,
-  });
+const RobotViewer = dynamic(() => import("../components/RobotViewer"), {
+  ssr: false,
+});
+
+const BACKEND_URL = "https://twinia-backend.onrender.com";
 
 export default function Home() {
   const [robot, setRobot] = useState("TWINIA");
@@ -35,6 +37,7 @@ export default function Home() {
 
   const [backendStatus, setBackendStatus] = useState("");
   const [experimentId, setExperimentId] = useState("");
+  const [experiments, setExperiments] = useState<any[]>([]);
 
   const robotPreview = useMemo(
     () =>
@@ -101,7 +104,7 @@ export default function Home() {
         formData.append("dataset_files", file);
       });
 
-      const response = await fetch("https://twinia-backend.onrender.com/create-experiment", {
+      const response = await fetch(`${BACKEND_URL}/create-experiment`, {
         method: "POST",
         body: formData,
       });
@@ -119,7 +122,28 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       setBackendStatus("Error conectando con el backend");
-     alert("Error conectando con el backend online de Render.");
+      alert("Error conectando con el backend online de Render.");
+    }
+  };
+
+  const listarExperimentos = async () => {
+    try {
+      setBackendStatus("Consultando experimentos...");
+
+      const response = await fetch(`${BACKEND_URL}/experiments`);
+
+      if (!response.ok) {
+        throw new Error("No se pudieron consultar los experimentos");
+      }
+
+      const data = await response.json();
+
+      setExperiments(data.experiments || []);
+      setBackendStatus(`Experimentos encontrados: ${data.total}`);
+    } catch (error) {
+      console.error(error);
+      setBackendStatus("Error consultando experimentos");
+      alert("Error consultando experimentos en Render.");
     }
   };
 
@@ -432,6 +456,14 @@ export default function Home() {
                 Crear experimento FastAPI
               </button>
 
+              <button
+                type="button"
+                onClick={listarExperimentos}
+                className="w-full mt-4 bg-black border border-[#76B900] text-[#76B900] p-5 rounded-2xl font-black hover:bg-[#76B900] hover:text-black transition"
+              >
+                Listar experimentos
+              </button>
+
               {backendStatus && (
                 <div className="mt-5 bg-black border border-zinc-800 rounded-2xl p-4">
                   <p className="text-[#76B900] font-bold">{backendStatus}</p>
@@ -440,6 +472,32 @@ export default function Home() {
                       {experimentId}
                     </p>
                   )}
+                </div>
+              )}
+
+              {experiments.length > 0 && (
+                <div className="mt-5 bg-black border border-zinc-800 rounded-2xl p-4">
+                  <h4 className="text-xl font-bold mb-4">
+                    Experimentos creados
+                  </h4>
+
+                  <div className="space-y-3">
+                    {experiments.map((exp) => (
+                      <div
+                        key={exp.experiment_id}
+                        className="bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm"
+                      >
+                        <p className="font-bold text-[#76B900]">
+                          ID: {exp.experiment_id}
+                        </p>
+                        <p>Robot: {exp.robot}</p>
+                        <p>IA: {exp.ia}</p>
+                        <p>Escenario: {exp.escenario}</p>
+                        <p>Sensor: {exp.sensor}</p>
+                        <p>Modo: {exp.modo_trabajo}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

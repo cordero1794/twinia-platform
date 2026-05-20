@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 import uuid
+from datetime import datetime
 
 app = FastAPI(title="TWINIA Backend")
 
@@ -16,6 +17,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+experiments = []
 
 @app.get("/")
 def home():
@@ -36,10 +39,9 @@ async def create_experiment(
 ):
     experiment_id = str(uuid.uuid4())[:8]
 
-    return {
-        "status": "success",
-        "message": "Experimento creado correctamente",
+    experiment = {
         "experiment_id": experiment_id,
+        "created_at": datetime.now().isoformat(),
         "robot": robot,
         "ia": ia,
         "escenario": escenario,
@@ -50,4 +52,20 @@ async def create_experiment(
         "dataset_size": dataset_size,
         "training_epochs": training_epochs,
         "validation_mode": validation_mode,
+    }
+
+    experiments.append(experiment)
+
+    return {
+        "status": "success",
+        "message": "Experimento creado correctamente",
+        "experiment_id": experiment_id,
+        "experiment": experiment,
+    }
+
+@app.get("/experiments")
+def list_experiments():
+    return {
+        "total": len(experiments),
+        "experiments": experiments,
     }
