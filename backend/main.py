@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, Form, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 import uuid
 from datetime import datetime
+import os
+import shutil
 
 app = FastAPI(title="TWINIA Backend")
 
@@ -20,6 +22,16 @@ app.add_middleware(
 )
 
 experiments = []
+
+UPLOAD_DIR = "uploads"
+
+ROBOT_DIR = os.path.join(UPLOAD_DIR, "robots")
+ENVIRONMENT_DIR = os.path.join(UPLOAD_DIR, "environments")
+DATASET_DIR = os.path.join(UPLOAD_DIR, "datasets")
+
+os.makedirs(ROBOT_DIR, exist_ok=True)
+os.makedirs(ENVIRONMENT_DIR, exist_ok=True)
+os.makedirs(DATASET_DIR, exist_ok=True)
 
 
 @app.get("/")
@@ -44,8 +56,68 @@ async def create_experiment(
     expected_recall: int = Form(0),
     expected_fps: int = Form(0),
     sim_to_real_reduction: int = Form(0),
+    robot_files: list[UploadFile] = File([]),
+    environment_files: list[UploadFile] = File([]),
+    dataset_files: list[UploadFile] = File([]),
 ):
     experiment_id = str(uuid.uuid4())[:8]
+
+    saved_robot_files = []
+    saved_environment_files = []
+    saved_dataset_files = []
+
+    robot_experiment_dir = os.path.join(ROBOT_DIR, experiment_id)
+    environment_experiment_dir = os.path.join(ENVIRONMENT_DIR, experiment_id)
+    dataset_experiment_dir = os.path.join(DATASET_DIR, experiment_id)
+
+    os.makedirs(robot_experiment_dir, exist_ok=True)
+    os.makedirs(environment_experiment_dir, exist_ok=True)
+    os.makedirs(dataset_experiment_dir, exist_ok=True)
+
+    for file in robot_files:
+        if file.filename:
+            file_path = os.path.join(robot_experiment_dir, file.filename)
+
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+
+            saved_robot_files.append(
+                {
+                    "filename": file.filename,
+                    "path": file_path,
+                    "content_type": file.content_type,
+                }
+            )
+
+    for file in environment_files:
+        if file.filename:
+            file_path = os.path.join(environment_experiment_dir, file.filename)
+
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+
+            saved_environment_files.append(
+                {
+                    "filename": file.filename,
+                    "path": file_path,
+                    "content_type": file.content_type,
+                }
+            )
+
+    for file in dataset_files:
+        if file.filename:
+            file_path = os.path.join(dataset_experiment_dir, file.filename)
+
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+
+            saved_dataset_files.append(
+                {
+                    "filename": file.filename,
+                    "path": file_path,
+                    "content_type": file.content_type,
+                }
+            )
 
     experiment = {
         "experiment_id": experiment_id,
@@ -65,6 +137,9 @@ async def create_experiment(
         "expected_recall": expected_recall,
         "expected_fps": expected_fps,
         "sim_to_real_reduction": sim_to_real_reduction,
+        "robot_files": saved_robot_files,
+        "environment_files": saved_environment_files,
+        "dataset_files": saved_dataset_files,
     }
 
     experiments.append(experiment)
@@ -85,17 +160,43 @@ def list_experiments():
     }
 
 
+@app.get("/experiment/{experiment_id}")
+def get_experiment(experiment_id: str):
+    experiment = next(
+        (exp for exp in experiments if exp["experiment_id"] == experiment_id),
+        None,
+    )
+
+    if not experiment:
+        raise HTTPException(status_code=404, detail="Experimento no encontrado")
+
+    return experiment
+
+
 @app.get("/report/{experiment_id}", response_class=HTMLResponse)
 def generate_report(experiment_id: str):
     experiment = next(
         (exp for exp in experiments if exp["experiment_id"] == experiment_id),
-        None
+        None,
     )
 
     if not experiment:
         raise HTTPException(status_code=404, detail="Experimento no encontrado")
 
     cosmos_status = "Activado" if experiment["cosmos"] == "true" else "Desactivado"
+
+    robot_files_html = "".join(
+        f"<li>{file['filename']}</li>" for file in experiment.get("robot_files", [])
+    ) or "<li>No se cargaron archivos de robot.</li>"
+
+    environment_files_html = "".join(
+        f"<li>{file['filename']}</li>"
+        for file in experiment.get("environment_files", [])
+    ) or "<li>No se cargaron archivos de ambiente.</li>"
+
+    dataset_files_html = "".join(
+        f"<li>{file['filename']}</li>" for file in experiment.get("dataset_files", [])
+    ) or "<li>No se cargaron archivos de dataset.</li>"
 
     html = f"""
     <!DOCTYPE html>
@@ -132,6 +233,10 @@ def generate_report(experiment_id: str):
             h2 {{
                 color: #76B900;
                 margin-top: 35px;
+            }}
+
+            h3 {{
+                margin-top: 20px;
             }}
 
             .subtitle {{
@@ -184,6 +289,16 @@ def generate_report(experiment_id: str):
                 color: #dddddd;
             }}
 
+            ul {{
+                background: #1b1b1b;
+                border-radius: 14px;
+                padding: 18px 18px 18px 38px;
+            }}
+
+            li {{
+                margin-bottom: 8px;
+            }}
+
             .footer {{
                 margin-top: 40px;
                 padding-top: 20px;
@@ -213,10 +328,14 @@ def generate_report(experiment_id: str):
                     color: black;
                 }}
 
-                .card, .item {{
+                .card, .item, ul {{
                     background: white;
                     color: black;
                     border: 1px solid #cccccc;
+                }}
+
+                .value {{
+                    color: black;
                 }}
 
                 h2, .metric {{
@@ -230,7 +349,9 @@ def generate_report(experiment_id: str):
         <div class="container">
             <div class="header">
                 <h1>TWINIA.AI</h1>
-                <p class="subtitle">Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos</p>
+                <p class="subtitle">
+                    Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos
+                </p>
                 <button onclick="window.print()">Descargar / Imprimir PDF</button>
             </div>
 
@@ -319,7 +440,20 @@ def generate_report(experiment_id: str):
             </div>
 
             <div class="card">
-                <h2>5. NVIDIA Cosmos</h2>
+                <h2>5. Archivos cargados</h2>
+
+                <h3>Robot personalizado</h3>
+                <ul>{robot_files_html}</ul>
+
+                <h3>Ambiente personalizado</h3>
+                <ul>{environment_files_html}</ul>
+
+                <h3>Dataset / datos sintéticos</h3>
+                <ul>{dataset_files_html}</ul>
+            </div>
+
+            <div class="card">
+                <h2>6. NVIDIA Cosmos</h2>
                 <div class="item">
                     <div class="label">Estado</div>
                     <div class="value">{cosmos_status}</div>
@@ -332,7 +466,7 @@ def generate_report(experiment_id: str):
             </div>
 
             <div class="card">
-                <h2>6. Interpretación técnica</h2>
+                <h2>7. Interpretación técnica</h2>
                 <p>
                     Este experimento fue configurado desde TWINIA Platform como una plantilla experimental
                     para procesos de IA física, gemelos digitales, generación de datos sintéticos y validación
@@ -340,8 +474,8 @@ def generate_report(experiment_id: str):
                 </p>
                 <p>
                     La configuración permite documentar el tipo de robot, ambiente, sensor, modelo de inteligencia
-                    artificial, tamaño del dataset, épocas de entrenamiento y métricas esperadas para análisis
-                    comparativos posteriores.
+                    artificial, tamaño del dataset, épocas de entrenamiento, archivos asociados y métricas esperadas
+                    para análisis comparativos posteriores.
                 </p>
             </div>
 
