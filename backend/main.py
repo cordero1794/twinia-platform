@@ -1,10 +1,14 @@
 from fastapi import FastAPI, Form, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from pymongo import MongoClient
+from dotenv import load_dotenv
 import uuid
 from datetime import datetime
 import os
 import shutil
+
+load_dotenv()
 
 app = FastAPI(title="TWINIA Backend")
 
@@ -21,7 +25,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-experiments = []
+MONGO_URI = os.getenv("MONGO_URI")
+
+if not MONGO_URI:
+    raise RuntimeError("No se encontró la variable de entorno MONGO_URI")
+
+client = MongoClient(MONGO_URI)
+db = client["twinia_db"]
+experiments_collection = db["experiments"]
 
 UPLOAD_DIR = "uploads"
 
@@ -36,7 +47,7 @@ os.makedirs(DATASET_DIR, exist_ok=True)
 
 @app.get("/")
 def home():
-    return {"message": "TWINIA Backend Online"}
+    return {"message": "TWINIA Backend Online with MongoDB"}
 
 
 @app.post("/create-experiment")
@@ -142,11 +153,11 @@ async def create_experiment(
         "dataset_files": saved_dataset_files,
     }
 
-    experiments.append(experiment)
+    experiments_collection.insert_one(experiment.copy())
 
     return {
         "status": "success",
-        "message": "Experimento creado correctamente",
+        "message": "Experimento creado correctamente y guardado en MongoDB",
         "experiment_id": experiment_id,
         "experiment": experiment,
     }
@@ -154,6 +165,10 @@ async def create_experiment(
 
 @app.get("/experiments")
 def list_experiments():
+    experiments = list(
+        experiments_collection.find({}, {"_id": 0}).sort("created_at", -1)
+    )
+
     return {
         "total": len(experiments),
         "experiments": experiments,
@@ -162,9 +177,9 @@ def list_experiments():
 
 @app.get("/experiment/{experiment_id}")
 def get_experiment(experiment_id: str):
-    experiment = next(
-        (exp for exp in experiments if exp["experiment_id"] == experiment_id),
-        None,
+    experiment = experiments_collection.find_one(
+        {"experiment_id": experiment_id},
+        {"_id": 0},
     )
 
     if not experiment:
@@ -175,27 +190,29 @@ def get_experiment(experiment_id: str):
 
 @app.get("/report/{experiment_id}", response_class=HTMLResponse)
 def generate_report(experiment_id: str):
-    experiment = next(
-        (exp for exp in experiments if exp["experiment_id"] == experiment_id),
-        None,
+    experiment = experiments_collection.find_one(
+        {"experiment_id": experiment_id},
+        {"_id": 0},
     )
 
     if not experiment:
         raise HTTPException(status_code=404, detail="Experimento no encontrado")
 
-    cosmos_status = "Activado" if experiment["cosmos"] == "true" else "Desactivado"
+    cosmos_status = "Activado" if experiment.get("cosmos") == "true" else "Desactivado"
 
     robot_files_html = "".join(
-        f"<li>{file['filename']}</li>" for file in experiment.get("robot_files", [])
+        f"<li>{file.get('filename', 'Archivo sin nombre')}</li>"
+        for file in experiment.get("robot_files", [])
     ) or "<li>No se cargaron archivos de robot.</li>"
 
     environment_files_html = "".join(
-        f"<li>{file['filename']}</li>"
+        f"<li>{file.get('filename', 'Archivo sin nombre')}</li>"
         for file in experiment.get("environment_files", [])
     ) or "<li>No se cargaron archivos de ambiente.</li>"
 
     dataset_files_html = "".join(
-        f"<li>{file['filename']}</li>" for file in experiment.get("dataset_files", [])
+        f"<li>{file.get('filename', 'Archivo sin nombre')}</li>"
+        for file in experiment.get("dataset_files", [])
     ) or "<li>No se cargaron archivos de dataset.</li>"
 
     html = f"""
@@ -287,6 +304,7 @@ def generate_report(experiment_id: str):
                 padding: 18px;
                 border-radius: 12px;
                 color: #dddddd;
+                white-space: pre-wrap;
             }}
 
             ul {{
@@ -299,14 +317,6 @@ def generate_report(experiment_id: str):
                 margin-bottom: 8px;
             }}
 
-            .footer {{
-                margin-top: 40px;
-                padding-top: 20px;
-                border-top: 1px solid #333333;
-                color: #888888;
-                font-size: 14px;
-            }}
-
             button {{
                 background: #76B900;
                 color: #000000;
@@ -316,6 +326,14 @@ def generate_report(experiment_id: str):
                 font-weight: bold;
                 cursor: pointer;
                 margin-top: 20px;
+            }}
+
+            .footer {{
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 1px solid #333333;
+                color: #888888;
+                font-size: 14px;
             }}
 
             @media print {{
@@ -360,11 +378,11 @@ def generate_report(experiment_id: str):
                 <div class="grid">
                     <div class="item">
                         <div class="label">ID del experimento</div>
-                        <div class="value">{experiment["experiment_id"]}</div>
+                        <div class="value">{experiment.get("experiment_id", "")}</div>
                     </div>
                     <div class="item">
                         <div class="label">Fecha de creación</div>
-                        <div class="value">{experiment["created_at"]}</div>
+                        <div class="value">{experiment.get("created_at", "")}</div>
                     </div>
                 </div>
             </div>
@@ -374,19 +392,19 @@ def generate_report(experiment_id: str):
                 <div class="grid">
                     <div class="item">
                         <div class="label">Robot</div>
-                        <div class="value">{experiment["robot"]}</div>
+                        <div class="value">{experiment.get("robot", "")}</div>
                     </div>
                     <div class="item">
                         <div class="label">Ambiente</div>
-                        <div class="value">{experiment["escenario"]}</div>
+                        <div class="value">{experiment.get("escenario", "")}</div>
                     </div>
                     <div class="item">
                         <div class="label">Sensor</div>
-                        <div class="value">{experiment["sensor"]}</div>
+                        <div class="value">{experiment.get("sensor", "")}</div>
                     </div>
                     <div class="item">
                         <div class="label">Validación</div>
-                        <div class="value">{experiment["validation_mode"]}</div>
+                        <div class="value">{experiment.get("validation_mode", "")}</div>
                     </div>
                 </div>
             </div>
@@ -396,19 +414,19 @@ def generate_report(experiment_id: str):
                 <div class="grid">
                     <div class="item">
                         <div class="label">Modelo IA</div>
-                        <div class="value">{experiment["ia"]}</div>
+                        <div class="value">{experiment.get("ia", "")}</div>
                     </div>
                     <div class="item">
                         <div class="label">Modo de trabajo</div>
-                        <div class="value">{experiment["modo_trabajo"]}</div>
+                        <div class="value">{experiment.get("modo_trabajo", "")}</div>
                     </div>
                     <div class="item">
                         <div class="label">Tamaño del dataset</div>
-                        <div class="value">{experiment["dataset_size"]} muestras</div>
+                        <div class="value">{experiment.get("dataset_size", 0)} muestras</div>
                     </div>
                     <div class="item">
                         <div class="label">Épocas de entrenamiento</div>
-                        <div class="value">{experiment["training_epochs"]}</div>
+                        <div class="value">{experiment.get("training_epochs", 0)}</div>
                     </div>
                 </div>
             </div>
@@ -418,23 +436,23 @@ def generate_report(experiment_id: str):
                 <div class="grid">
                     <div class="item">
                         <div class="label">mAP esperado</div>
-                        <div class="metric">{experiment["expected_map"]}%</div>
+                        <div class="metric">{experiment.get("expected_map", 0)}%</div>
                     </div>
                     <div class="item">
                         <div class="label">Precisión esperada</div>
-                        <div class="metric">{experiment["expected_precision"]}%</div>
+                        <div class="metric">{experiment.get("expected_precision", 0)}%</div>
                     </div>
                     <div class="item">
                         <div class="label">Recall esperado</div>
-                        <div class="metric">{experiment["expected_recall"]}%</div>
+                        <div class="metric">{experiment.get("expected_recall", 0)}%</div>
                     </div>
                     <div class="item">
                         <div class="label">FPS esperado</div>
-                        <div class="metric">{experiment["expected_fps"]}</div>
+                        <div class="metric">{experiment.get("expected_fps", 0)}</div>
                     </div>
                     <div class="item">
                         <div class="label">Reducción Sim-to-Real</div>
-                        <div class="metric">{experiment["sim_to_real_reduction"]}%</div>
+                        <div class="metric">{experiment.get("sim_to_real_reduction", 0)}%</div>
                     </div>
                 </div>
             </div>
@@ -460,9 +478,7 @@ def generate_report(experiment_id: str):
                 </div>
 
                 <h3>Prompt sintético</h3>
-                <div class="prompt">
-                    {experiment["cosmos_prompt"]}
-                </div>
+                <div class="prompt">{experiment.get("cosmos_prompt", "")}</div>
             </div>
 
             <div class="card">
@@ -473,9 +489,8 @@ def generate_report(experiment_id: str):
                     Sim-to-Real.
                 </p>
                 <p>
-                    La configuración permite documentar el tipo de robot, ambiente, sensor, modelo de inteligencia
-                    artificial, tamaño del dataset, épocas de entrenamiento, archivos asociados y métricas esperadas
-                    para análisis comparativos posteriores.
+                    La información queda almacenada en MongoDB, lo cual permite trazabilidad, consulta histórica,
+                    generación de reportes y futuras comparaciones entre experimentos.
                 </p>
             </div>
 
