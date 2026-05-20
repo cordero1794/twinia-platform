@@ -21,12 +21,18 @@ export default function Home() {
   const [trainingEpochs, setTrainingEpochs] = useState(50);
   const [validationMode, setValidationMode] = useState("Sim-to-Real");
 
+  const [expectedMap, setExpectedMap] = useState(75);
+  const [expectedPrecision, setExpectedPrecision] = useState(80);
+  const [expectedRecall, setExpectedRecall] = useState(78);
+  const [expectedFps, setExpectedFps] = useState(25);
+  const [simToRealReduction, setSimToRealReduction] = useState(30);
+
   const [backendStatus, setBackendStatus] = useState("");
   const [experimentId, setExperimentId] = useState("");
   const [experiments, setExperiments] = useState<any[]>([]);
 
   const [cosmosPrompt, setCosmosPrompt] = useState(
-    "Robot cuadrúpedo caminando en un parque urbano con obstáculos y líneas podotáctiles."
+    "Robot cuadrúpedo caminando en un parque urbano con obstáculos reales y líneas podotáctiles."
   );
 
   const [robotFiles, setRobotFiles] = useState<File[]>([]);
@@ -80,6 +86,12 @@ export default function Home() {
       formData.append("training_epochs", String(trainingEpochs));
       formData.append("validation_mode", validationMode);
 
+      formData.append("expected_map", String(expectedMap));
+      formData.append("expected_precision", String(expectedPrecision));
+      formData.append("expected_recall", String(expectedRecall));
+      formData.append("expected_fps", String(expectedFps));
+      formData.append("sim_to_real_reduction", String(simToRealReduction));
+
       robotFiles.forEach((file) => {
         formData.append("robot_files", file);
       });
@@ -106,7 +118,7 @@ export default function Home() {
       setExperimentId(data.experiment_id);
       setBackendStatus("Experimento creado correctamente");
 
-      alert(`Experimento creado\nID: ${data.experiment_id}`);
+      alert(`Experimento creado correctamente\n\nID: ${data.experiment_id}`);
     } catch (error) {
       console.error(error);
       setBackendStatus("Error conectando con backend");
@@ -131,10 +143,11 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       setBackendStatus("Error consultando experimentos");
+      alert("Error consultando experimentos.");
     }
   };
 
-  const verReporte = async (id: string) => {
+  const verReporte = (id: string) => {
     window.open(`${BACKEND_URL}/report/${id}`, "_blank");
   };
 
@@ -167,12 +180,12 @@ export default function Home() {
               </p>
 
               <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
-                Generador personalizado de entrenamiento robótico
+                Generador personalizado de entrenamiento robótico.
               </h2>
 
               <p className="text-zinc-300 text-lg leading-relaxed mb-8">
-                Cree pipelines personalizados para robots autónomos,
-                entrenamiento IA, gemelos digitales y validación Sim-to-Real.
+                Cree pipelines personalizados para robots autónomos, gemelos
+                digitales, entrenamiento IA y generación de datos sintéticos.
               </p>
 
               <button
@@ -209,22 +222,20 @@ export default function Home() {
 
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-8">
-
-              <h3 className="text-3xl font-black mb-6">
+              <h3 className="text-3xl font-black mb-2">
                 Configuración experimental
               </h3>
+
+              <p className="text-zinc-400 mb-8">
+                Personalice el pipeline robótico.
+              </p>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <Selector
                   label="Robot"
                   value={robot}
                   setValue={setRobot}
-                  options={[
-                    "TWINIA",
-                    "Spot",
-                    "Unitree",
-                    "Robot personalizado",
-                  ]}
+                  options={["TWINIA", "Spot", "Unitree", "Robot personalizado"]}
                 />
 
                 <Selector
@@ -236,6 +247,7 @@ export default function Home() {
                     "CNN",
                     "Reinforcement Learning",
                     "Segmentación",
+                    "Seguimiento de línea",
                   ]}
                 />
 
@@ -246,8 +258,9 @@ export default function Home() {
                   options={[
                     "Parque urbano",
                     "Hospital",
+                    "Ciudad",
                     "Universidad",
-                    "Ciudad inteligente",
+                    "Ambiente personalizado",
                   ]}
                 />
 
@@ -255,21 +268,38 @@ export default function Home() {
                   label="Sensor"
                   value={sensor}
                   setValue={setSensor}
-                  options={["RGB", "RGB-D", "LiDAR"]}
+                  options={["RGB", "RGB-D", "LiDAR", "Ultrasonido"]}
                 />
               </div>
 
               <Panel title="Flujo experimental">
-                <Selector
-                  label="Modo de trabajo"
-                  value={modoTrabajo}
-                  setValue={setModoTrabajo}
-                  options={[
-                    "Generar dataset sintético",
-                    "Entrenar modelo IA",
-                    "Validar Sim-to-Real",
-                  ]}
-                />
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Selector
+                    label="Modo de trabajo"
+                    value={modoTrabajo}
+                    setValue={setModoTrabajo}
+                    options={[
+                      "Solo simulación",
+                      "Generar dataset sintético",
+                      "Entrenar modelo IA",
+                      "Ejecutar inferencia",
+                      "Validar Sim-to-Real",
+                    ]}
+                  />
+
+                  <Selector
+                    label="Tipo de validación"
+                    value={validationMode}
+                    setValue={setValidationMode}
+                    options={[
+                      "Sim-to-Real",
+                      "Real-to-Sim",
+                      "Simulado",
+                      "Real",
+                      "Híbrido DSR",
+                    ]}
+                  />
+                </div>
 
                 <ControlSlider
                   label="Tamaño del dataset"
@@ -281,7 +311,7 @@ export default function Home() {
                 />
 
                 <ControlSlider
-                  label="Épocas entrenamiento"
+                  label="Épocas de entrenamiento"
                   value={trainingEpochs}
                   min={1}
                   max={300}
@@ -290,34 +320,99 @@ export default function Home() {
                 />
               </Panel>
 
+              <Panel title="Métricas esperadas">
+                <ControlSlider
+                  label="mAP esperado (%)"
+                  value={expectedMap}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onChange={setExpectedMap}
+                />
+
+                <ControlSlider
+                  label="Precisión esperada (%)"
+                  value={expectedPrecision}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onChange={setExpectedPrecision}
+                />
+
+                <ControlSlider
+                  label="Recall esperado (%)"
+                  value={expectedRecall}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onChange={setExpectedRecall}
+                />
+
+                <ControlSlider
+                  label="FPS esperado"
+                  value={expectedFps}
+                  min={1}
+                  max={120}
+                  step={1}
+                  onChange={setExpectedFps}
+                />
+
+                <ControlSlider
+                  label="Reducción Sim-to-Real (%)"
+                  value={simToRealReduction}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onChange={setSimToRealReduction}
+                />
+              </Panel>
+
               <UploadBox
                 title="Robot personalizado"
-                description=".usd .urdf .obj .fbx .glb"
+                description=".usd .urdf .obj .fbx .gltf .glb"
                 onChange={setRobotFiles}
               />
 
-              <PreviewGrid title="Robot files" files={robotPreview} />
+              <PreviewGrid title="Archivos de robot" files={robotPreview} />
 
               <UploadBox
                 title="Ambiente personalizado"
-                description=".usd .usdz .obj .fbx .glb"
+                description=".usd .usdz .obj .fbx .gltf .glb"
                 onChange={setEnvironmentFiles}
               />
 
               <PreviewGrid
-                title="Environment files"
+                title="Archivos de ambiente"
                 files={environmentPreview}
               />
 
               <UploadBox
                 title="Dataset / Data sintética"
-                description="Imágenes, ZIP, labels."
+                description="Imágenes, videos, labels, ZIP."
                 onChange={setDatasetFiles}
               />
 
-              <PreviewGrid title="Dataset files" files={datasetPreview} />
+              <PreviewGrid title="Archivos dataset" files={datasetPreview} />
 
               <Panel title="NVIDIA Cosmos">
+                <div className="flex items-center justify-between gap-5 mb-5">
+                  <p className="text-zinc-400">
+                    Prompt para generación de video sintético.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setCosmos(!cosmos)}
+                    className={`px-6 py-3 rounded-full font-bold transition ${
+                      cosmos
+                        ? "bg-[#76B900] text-black"
+                        : "bg-zinc-800 text-zinc-300"
+                    }`}
+                  >
+                    {cosmos ? "Activado" : "Desactivado"}
+                  </button>
+                </div>
+
                 <textarea
                   value={cosmosPrompt}
                   onChange={(e) => setCosmosPrompt(e.target.value)}
@@ -334,51 +429,89 @@ export default function Home() {
                 <Info label="IA" value={ia} />
                 <Info label="Ambiente" value={escenario} />
                 <Info label="Sensor" value={sensor} />
+                <Info label="Cosmos" value={cosmos ? "Sí" : "No"} />
                 <Info label="Modo" value={modoTrabajo} />
                 <Info label="Dataset" value={`${datasetSize} muestras`} />
                 <Info label="Épocas" value={`${trainingEpochs}`} />
+                <Info label="Validación" value={validationMode} />
+                <Info label="mAP" value={`${expectedMap}%`} />
+                <Info label="Precisión" value={`${expectedPrecision}%`} />
+                <Info label="Recall" value={`${expectedRecall}%`} />
+                <Info label="FPS" value={`${expectedFps}`} />
+                <Info
+                  label="Sim-to-Real"
+                  value={`${simToRealReduction}% reducción`}
+                />
+                <Info label="Archivos robot" value={`${robotFiles.length}`} />
+                <Info
+                  label="Archivos ambiente"
+                  value={`${environmentFiles.length}`}
+                />
+                <Info
+                  label="Archivos dataset"
+                  value={`${datasetFiles.length}`}
+                />
               </div>
 
               <button
                 type="button"
+                onClick={crearExperimentoBackend}
+                className="w-full mt-8 bg-[#76B900] text-black p-5 rounded-2xl font-black hover:scale-105 transition"
+              >
+                Crear experimento FastAPI
+              </button>
+
+              <button
+                type="button"
                 onClick={listarExperimentos}
-                className="w-full mt-8 bg-black border border-[#76B900] text-[#76B900] p-5 rounded-2xl font-black hover:bg-[#76B900] hover:text-black transition"
+                className="w-full mt-4 bg-black border border-[#76B900] text-[#76B900] p-5 rounded-2xl font-black hover:bg-[#76B900] hover:text-black transition"
               >
                 Listar experimentos
               </button>
 
+              {backendStatus && (
+                <div className="mt-5 bg-black border border-zinc-800 rounded-2xl p-4">
+                  <p className="text-[#76B900] font-bold">{backendStatus}</p>
+
+                  {experimentId && (
+                    <p className="text-zinc-400 mt-2 break-all">
+                      {experimentId}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {experiments.length > 0 && (
-                <div className="mt-5 space-y-4">
-                  {experiments.map((exp) => (
-                    <div
-                      key={exp.experiment_id}
-                      className="bg-black border border-zinc-800 rounded-2xl p-4"
-                    >
-                      <p className="font-bold text-[#76B900]">
-                        ID: {exp.experiment_id}
-                      </p>
+                <div className="mt-5 bg-black border border-zinc-800 rounded-2xl p-4">
+                  <h4 className="text-xl font-bold mb-4">
+                    Experimentos creados
+                  </h4>
 
-                      <p className="text-sm mt-2">
-                        Robot: {exp.robot}
-                      </p>
-
-                      <p className="text-sm">
-                        IA: {exp.ia}
-                      </p>
-
-                      <p className="text-sm">
-                        Escenario: {exp.escenario}
-                      </p>
-
-                      <button
-                        type="button"
-                        onClick={() => verReporte(exp.experiment_id)}
-                        className="mt-4 w-full bg-[#76B900] text-black px-4 py-2 rounded-xl font-bold hover:scale-105 transition"
+                  <div className="space-y-3">
+                    {experiments.map((exp) => (
+                      <div
+                        key={exp.experiment_id}
+                        className="bg-zinc-900 border border-zinc-800 rounded-xl p-3 text-sm"
                       >
-                        Ver reporte
-                      </button>
-                    </div>
-                  ))}
+                        <p className="font-bold text-[#76B900]">
+                          ID: {exp.experiment_id}
+                        </p>
+                        <p>Robot: {exp.robot}</p>
+                        <p>IA: {exp.ia}</p>
+                        <p>Escenario: {exp.escenario}</p>
+                        <p>Sensor: {exp.sensor}</p>
+                        <p>Modo: {exp.modo_trabajo}</p>
+
+                        <button
+                          type="button"
+                          onClick={() => verReporte(exp.experiment_id)}
+                          className="mt-3 w-full bg-[#76B900] text-black px-4 py-2 rounded-xl font-bold hover:scale-105 transition"
+                        >
+                          Ver reporte
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -402,9 +535,7 @@ function Selector({
 }) {
   return (
     <div>
-      <label className="block text-zinc-300 mb-2 font-semibold">
-        {label}
-      </label>
+      <label className="block text-zinc-300 mb-2 font-semibold">{label}</label>
 
       <select
         value={value}
@@ -438,7 +569,6 @@ function ControlSlider({
     <div className="mt-6">
       <div className="flex justify-between mb-2">
         <label className="text-zinc-300 font-semibold">{label}</label>
-
         <span className="text-[#76B900] font-bold">{value}</span>
       </div>
 
@@ -512,9 +642,7 @@ function PreviewGrid({
 
       <div className="grid md:grid-cols-2 gap-4">
         {files.length === 0 && (
-          <div className="text-zinc-500">
-            No hay archivos cargados.
-          </div>
+          <div className="text-zinc-500">No hay archivos cargados.</div>
         )}
 
         {files.map((file, index) => (
@@ -522,11 +650,17 @@ function PreviewGrid({
             key={index}
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4"
           >
+            {file.type.startsWith("image") && (
+              <img
+                src={file.url}
+                alt={file.name}
+                className="h-32 w-full object-cover rounded-xl mb-3"
+              />
+            )}
+
             <p className="font-bold break-all">{file.name}</p>
 
-            <p className="text-zinc-400 text-sm">
-              {file.type || "Archivo"}
-            </p>
+            <p className="text-zinc-400 text-sm">{file.type || "Archivo"}</p>
           </div>
         ))}
       </div>
@@ -534,13 +668,7 @@ function PreviewGrid({
   );
 }
 
-function Info({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function Info({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-zinc-900 rounded-2xl p-4 border border-zinc-800">
       <p className="text-zinc-500 text-sm">{label}</p>
@@ -549,13 +677,7 @@ function Info({
   );
 }
 
-function Badge({
-  title,
-  value,
-}: {
-  title: string;
-  value: string;
-}) {
+function Badge({ title, value }: { title: string; value: string }) {
   return (
     <div className="bg-zinc-900 rounded-2xl p-4">
       <p className="text-zinc-400 text-sm">{title}</p>
