@@ -224,14 +224,14 @@ export default function Home() {
         Visualización 3D del escenario seleccionado.
       </p>
 
-      <div className="h-[620px] rounded-2xl overflow-hidden border border-zinc-800">
+      <div className="h-[520px] rounded-2xl overflow-hidden border border-zinc-800">
         <EnvironmentViewer escenario={escenario} />
       </div>
     </div>
   </div>
 
-  <div className="space-y-5">
-    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
+  <div className="space-y-2">
+    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-4 shadow-2xl max-h-[260px] overflow-hidden">
       <RobotViewer robot={robot} />
 
       <div className="grid grid-cols-3 gap-3 mt-4">
@@ -241,8 +241,8 @@ export default function Home() {
       </div>
     </div>
 
-    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-      <div className="h-[620px] w-full rounded-2xl overflow-hidden border border-zinc-800">
+    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full -mt-2">
+      <div className="h-[520px] w-full rounded-2xl overflow-hidden border border-zinc-800">
         <ModelViewer ia={ia} />
       </div>
     </div>
