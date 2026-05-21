@@ -367,7 +367,7 @@ const exportarConfigCosmos = () => {
 
       <nav className="flex justify-between items-start mb-20">
 
-        <div className="mt-16">
+        <div className="mt-60">
           <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
             TWINIA<span className="text-[#76B900]">.</span>AI
           </h1>
@@ -377,7 +377,7 @@ const exportarConfigCosmos = () => {
           </p>
         </div>
 
-<div className="w-[700px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
+<div className="w-[710px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
   
   <div className="flex items-center justify-between mb-4">
     <div>
