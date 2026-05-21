@@ -51,73 +51,73 @@ export default function Home() {
   const [datasetFiles, setDatasetFiles] = useState<File[]>([]);
 
   const aplicarModoTrabajo = (modo: string) => {
-  setModoTrabajo(modo);
+    setModoTrabajo(modo);
 
-  if (modo === "Solo simulación") {
-    setDatasetSize(100);
-    setTrainingEpochs(1);
-    setExpectedMap(0);
-    setExpectedPrecision(0);
-    setExpectedRecall(0);
-    setExpectedFps(30);
-    setSimToRealReduction(10);
-    setCosmosPrompt(
-      "Simulación básica del robot en un entorno virtual controlado para validar movimiento, sensores y comportamiento inicial."
-    );
-  }
+    if (modo === "Solo simulación") {
+      setDatasetSize(100);
+      setTrainingEpochs(1);
+      setExpectedMap(0);
+      setExpectedPrecision(0);
+      setExpectedRecall(0);
+      setExpectedFps(30);
+      setSimToRealReduction(10);
+      setCosmosPrompt(
+        "Simulación básica del robot en un entorno virtual controlado para validar movimiento, sensores y comportamiento inicial."
+      );
+    }
 
-  if (modo === "Generar dataset sintético") {
-    setDatasetSize(3000);
-    setTrainingEpochs(1);
-    setExpectedMap(0);
-    setExpectedPrecision(0);
-    setExpectedRecall(0);
-    setExpectedFps(25);
-    setSimToRealReduction(35);
-    setCosmosPrompt(
-      "Generar escenas sintéticas variadas del robot en un parque urbano con iluminación cambiante, obstáculos, líneas podotáctiles y objetos relevantes."
-    );
-  }
+    if (modo === "Generar dataset sintético") {
+      setDatasetSize(3000);
+      setTrainingEpochs(1);
+      setExpectedMap(0);
+      setExpectedPrecision(0);
+      setExpectedRecall(0);
+      setExpectedFps(25);
+      setSimToRealReduction(35);
+      setCosmosPrompt(
+        "Generar escenas sintéticas variadas del robot en un parque urbano con iluminación cambiante, obstáculos, líneas podotáctiles y objetos relevantes."
+      );
+    }
 
-  if (modo === "Entrenar modelo IA") {
-    setDatasetSize(5000);
-    setTrainingEpochs(100);
-    setExpectedMap(85);
-    setExpectedPrecision(88);
-    setExpectedRecall(84);
-    setExpectedFps(20);
-    setSimToRealReduction(45);
-    setCosmosPrompt(
-      "Dataset sintético hiperrealista para entrenar un modelo de IA robusto en detección, navegación y reconocimiento del entorno."
-    );
-  }
+    if (modo === "Entrenar modelo IA") {
+      setDatasetSize(5000);
+      setTrainingEpochs(100);
+      setExpectedMap(85);
+      setExpectedPrecision(88);
+      setExpectedRecall(84);
+      setExpectedFps(20);
+      setSimToRealReduction(45);
+      setCosmosPrompt(
+        "Dataset sintético hiperrealista para entrenar un modelo de IA robusto en detección, navegación y reconocimiento del entorno."
+      );
+    }
 
-  if (modo === "Ejecutar inferencia") {
-    setDatasetSize(1000);
-    setTrainingEpochs(1);
-    setExpectedMap(80);
-    setExpectedPrecision(85);
-    setExpectedRecall(82);
-    setExpectedFps(35);
-    setSimToRealReduction(30);
-    setCosmosPrompt(
-      "Evaluar inferencia en tiempo real con cámara RGB/RGB-D para detectar objetos, líneas podotáctiles y obstáculos."
-    );
-  }
+    if (modo === "Ejecutar inferencia") {
+      setDatasetSize(1000);
+      setTrainingEpochs(1);
+      setExpectedMap(80);
+      setExpectedPrecision(85);
+      setExpectedRecall(82);
+      setExpectedFps(35);
+      setSimToRealReduction(30);
+      setCosmosPrompt(
+        "Evaluar inferencia en tiempo real con cámara RGB/RGB-D para detectar objetos, líneas podotáctiles y obstáculos."
+      );
+    }
 
-  if (modo === "Validar Sim-to-Real") {
-    setDatasetSize(2000);
-    setTrainingEpochs(30);
-    setExpectedMap(82);
-    setExpectedPrecision(86);
-    setExpectedRecall(83);
-    setExpectedFps(25);
-    setSimToRealReduction(60);
-    setCosmosPrompt(
-      "Comparar resultados entre simulación, datos sintéticos y escenario real para medir reducción de brecha Sim-to-Real."
-    );
-  }
-};
+    if (modo === "Validar Sim-to-Real") {
+      setDatasetSize(2000);
+      setTrainingEpochs(30);
+      setExpectedMap(82);
+      setExpectedPrecision(86);
+      setExpectedRecall(83);
+      setExpectedFps(25);
+      setSimToRealReduction(60);
+      setCosmosPrompt(
+        "Comparar resultados entre simulación, datos sintéticos y escenario real para medir reducción de brecha Sim-to-Real."
+      );
+    }
+  };
 
   const robotPreview = useMemo(
     () =>
@@ -173,9 +173,11 @@ export default function Home() {
       formData.append("sim_to_real_reduction", String(simToRealReduction));
 
       robotFiles.forEach((file) => formData.append("robot_files", file));
+
       environmentFiles.forEach((file) =>
         formData.append("environment_files", file)
       );
+
       datasetFiles.forEach((file) => formData.append("dataset_files", file));
 
       const response = await fetch(`${BACKEND_URL}/create-experiment`, {
@@ -227,7 +229,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
-      <section className="relative px-4 md:px-8 py-10 max-w-7xl mx-auto">
+      <section className="relative px-4 md:px-8 py-10 max-w-[1600px] mx-auto">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,#76b900,transparent_35%),radial-gradient(circle_at_bottom_right,#1d4ed8,transparent_30%)]" />
 
         <div className="relative z-10">
@@ -247,76 +249,78 @@ export default function Home() {
             </button>
           </nav>
 
-<div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start mb-10">
-  <div className="space-y-6">
-    <div>
-      <p className="text-[#76B900] font-bold mb-4">
-        PLATAFORMA DOCTORAL DE IA FÍSICA
-      </p>
+          <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start mb-10">
+            <div className="space-y-6">
+              <div>
+                <p className="text-[#76B900] font-bold mb-4">
+                  PLATAFORMA DOCTORAL DE IA FÍSICA
+                </p>
 
-      <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
-        Generador personalizado de entrenamiento robótico.
-      </h2>
+                <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
+                  Generador personalizado de entrenamiento robótico.
+                </h2>
 
-      <p className="text-zinc-300 text-lg leading-relaxed mb-8">
-        Cree pipelines personalizados para robots autónomos, gemelos digitales,
-        entrenamiento IA y generación de datos sintéticos.
-      </p>
+                <p className="text-zinc-300 text-lg leading-relaxed mb-8">
+                  Cree pipelines personalizados para robots autónomos, gemelos
+                  digitales, entrenamiento IA y generación de datos sintéticos.
+                </p>
 
-      <button
-        type="button"
-        onClick={crearExperimentoBackend}
-        className="bg-[#76B900] text-black px-7 py-4 rounded-xl font-bold hover:scale-105 transition"
-      >
-        Crear experimento FastAPI
-      </button>
+                <button
+                  type="button"
+                  onClick={crearExperimentoBackend}
+                  className="bg-[#76B900] text-black px-7 py-4 rounded-xl font-bold hover:scale-105 transition"
+                >
+                  Crear experimento FastAPI
+                </button>
 
-      {backendStatus && (
-        <div className="mt-5 bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
-          <p className="text-[#76B900] font-bold">{backendStatus}</p>
+                {backendStatus && (
+                  <div className="mt-5 bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+                    <p className="text-[#76B900] font-bold">
+                      {backendStatus}
+                    </p>
 
-          {experimentId && (
-            <p className="text-zinc-400 mt-2">
-              ID del experimento: {experimentId}
-            </p>
-          )}
-        </div>
-      )}
-    </div>
+                    {experimentId && (
+                      <p className="text-zinc-400 mt-2">
+                        ID del experimento: {experimentId}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
 
-    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-      <h3 className="text-2xl font-black mb-2">
-        Vista previa del ambiente
-      </h3>
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
+                <h3 className="text-2xl font-black mb-2">
+                  Vista previa del ambiente
+                </h3>
 
-      <p className="text-zinc-400 mb-4 text-sm">
-        Visualización 3D del escenario seleccionado.
-      </p>
+                <p className="text-zinc-400 mb-4 text-sm">
+                  Visualización 3D del escenario seleccionado.
+                </p>
 
-      <div className="h-[605px] rounded-2xl overflow-hidden border border-zinc-800">
-        <EnvironmentViewer escenario={escenario} />
-      </div>
-    </div>
-  </div>
+                <div className="h-[605px] rounded-2xl overflow-hidden border border-zinc-800">
+                  <EnvironmentViewer escenario={escenario} />
+                </div>
+              </div>
+            </div>
 
-  <div className="space-y-5">
-    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
-      <RobotViewer robot={robot} />
+            <div className="space-y-5">
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
+                <RobotViewer robot={robot} />
 
-      <div className="grid grid-cols-3 gap-3 mt-4">
-        <Badge title="Sim" value="Isaac Sim" />
-        <Badge title="Data" value="Cosmos" />
-        <Badge title="Backend" value="FastAPI" />
-      </div>
-    </div>
+                <div className="grid grid-cols-3 gap-3 mt-4">
+                  <Badge title="Sim" value="Isaac Sim" />
+                  <Badge title="Data" value="Cosmos" />
+                  <Badge title="Backend" value="FastAPI" />
+                </div>
+              </div>
 
-    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-      <div className="h-[680px] w-full rounded-2xl overflow-hidden border border-zinc-800">
-        <ModelViewer ia={ia} />
-      </div>
-    </div>
-  </div>
-</div>
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
+                <div className="h-[680px] w-full rounded-2xl overflow-hidden border border-zinc-800">
+                  <ModelViewer ia={ia} />
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-6 items-stretch w-full max-w-[1600px] mx-auto mt-2">
             <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-4 w-full h-full">
@@ -375,69 +379,35 @@ export default function Home() {
                 />
               </div>
 
-<Panel title="Flujo experimental">
+              <Panel title="Flujo experimental">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                  {[
+                    "Solo simulación",
+                    "Generar dataset sintético",
+                    "Entrenar modelo IA",
+                    "Ejecutar inferencia",
+                    "Validar Sim-to-Real",
+                  ].map((modo, index) => (
+                    <button
+                      key={modo}
+                      type="button"
+                      onClick={() => aplicarModoTrabajo(modo)}
+                      className={`text-left rounded-2xl border p-4 transition hover:scale-[1.02] ${
+                        modoTrabajo === modo
+                          ? "border-[#76B900] bg-[#76B900]/15 text-white"
+                          : "border-zinc-800 bg-zinc-950 text-zinc-400"
+                      }`}
+                    >
+                      <p className="text-[#76B900] font-black text-sm mb-2">
+                        Fase {index + 1}
+                      </p>
 
-  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                      <p className="font-bold text-sm leading-tight">{modo}</p>
+                    </button>
+                  ))}
+                </div>
 
-    {[
-      "Solo simulación",
-      "Generar dataset sintético",
-      "Entrenar modelo IA",
-      "Ejecutar inferencia",
-      "Validar Sim-to-Real",
-    ].map((modo, index) => (
-
-      <button
-        key={modo}
-        type="button"
-        onClick={() => aplicarModoTrabajo(modo)}
-        className={`text-left rounded-2xl border p-4 transition hover:scale-[1.02] ${
-          modoTrabajo === modo
-            ? "border-[#76B900] bg-[#76B900]/15 text-white"
-            : "border-zinc-800 bg-zinc-950 text-zinc-400"
-        }`}
-      >
-
-        <p className="text-[#76B900] font-black text-sm mb-2">
-          Fase {index + 1}
-        </p>
-
-        <p className="font-bold text-sm leading-tight">
-          {modo}
-        </p>
-
-      </button>
-
-    ))}
-  </div>
-
-  <div className="mt-4 grid md:grid-cols-2 gap-3">
-
-    <Selector
-      label="Tipo de validación"
-      value={validationMode}
-      setValue={setValidationMode}
-      options={[
-        "Sim-to-Real",
-        "Real-to-Sim",
-        "Simulado",
-        "Real",
-        "Híbrido DSR",
-      ]}
-    />
-
-    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-4">
-      <p className="text-zinc-400 text-sm mb-1">
-        Estado del flujo
-      </p>
-
-      <p className="text-[#76B900] font-black">
-        {modoTrabajo}
-      </p>
-    </div>
-
-  </div>
-
+                <div className="mt-4 grid md:grid-cols-2 gap-3">
                   <Selector
                     label="Tipo de validación"
                     value={validationMode}
@@ -450,6 +420,14 @@ export default function Home() {
                       "Híbrido DSR",
                     ]}
                   />
+
+                  <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-4">
+                    <p className="text-zinc-400 text-sm mb-1">
+                      Estado del flujo
+                    </p>
+
+                    <p className="text-[#76B900] font-black">{modoTrabajo}</p>
+                  </div>
                 </div>
 
                 <ControlSlider
@@ -517,8 +495,7 @@ export default function Home() {
                   onChange={setSimToRealReduction}
                 />
               </Panel>
-
-              <UploadBox
+                            <UploadBox
                 title="Robot personalizado"
                 description=".usd .urdf .obj .fbx .gltf .glb"
                 onChange={setRobotFiles}
@@ -644,6 +621,7 @@ export default function Home() {
                         <p className="font-bold text-[#76B900]">
                           ID: {exp.experiment_id}
                         </p>
+
                         <p>Robot: {exp.robot}</p>
                         <p>IA: {exp.ia}</p>
                         <p>Escenario: {exp.escenario}</p>
