@@ -374,7 +374,7 @@ const exportarConfigCosmos = () => {
               </p>
             </div>
 
-<div className="w-[1220px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
+<div className="w-[920px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
   
   <div className="flex items-center justify-between mb-4">
     <div>
