@@ -21,6 +21,8 @@ const EnvironmentViewer = dynamic(
 const BACKEND_URL = "https://twinia-backend.onrender.com";
 
 export default function Home() {
+
+  
   const [robot, setRobot] = useState("TWINIA");
   const [ia, setIa] = useState("YOLO");
   const [escenario, setEscenario] = useState("Parque urbano");
@@ -50,13 +52,34 @@ export default function Home() {
   const [environmentFiles, setEnvironmentFiles] = useState<File[]>([]);
   const [datasetFiles, setDatasetFiles] = useState<File[]>([]);
   const [datasetInfo, setDatasetInfo] = useState({
-  totalImages: 0,
-  totalVideos: 0,
-  totalLabels: 0,
-  totalZip: 0,
-  totalSizeMB: 0,
-  datasetReady: false,
-});
+    totalImages: 0,
+    totalVideos: 0,
+    totalLabels: 0,
+    totalZip: 0,
+    totalSizeMB: 0,
+    datasetReady: false,
+  });
+
+  const [cosmosOptions, setCosmosOptions] = useState({
+    lluvia: false,
+    noche: false,
+    peatones: true,
+    trafico: false,
+    niebla: false,
+    obstaculos: true,
+  });
+
+  const [cosmosEstimate, setCosmosEstimate] = useState({
+    images: 0,
+    videos: 0,
+    sizeGB: 0,
+    gpuHours: 0,
+    map: expectedMap,
+    precision: expectedPrecision,
+    recall: expectedRecall,
+    simToReal: simToRealReduction,
+
+  });
 
   const aplicarModoTrabajo = (modo: string) => {
     setModoTrabajo(modo);
@@ -234,6 +257,97 @@ export default function Home() {
   const verReporte = (id: string) => {
     window.open(`${BACKEND_URL}/report/${id}`, "_blank");
   };
+const generarPromptCosmos = () => {
+  const condiciones = Object.entries(cosmosOptions)
+    .filter(([, value]) => value)
+    .map(([key]) => key)
+    .join(", ");
+
+  const prompt = `Robot ${robot} operando en ${escenario}, usando sensor ${sensor}, para ${modoTrabajo}. Escenario hiperrealista con ${condiciones}, iluminación dinámica, física avanzada y validación ${validationMode}.`;
+
+  setCosmosPrompt(prompt);
+};
+
+const estimarCosmos = () => {
+  const factor = cosmos ? 1.4 : 1;
+  const images = Math.round(datasetSize * factor);
+  const videos = Math.max(1, Math.round(images / 3000));
+  const sizeGB = Number((images * 0.0012).toFixed(2));
+  const gpuHours = Number((trainingEpochs * 0.035 + videos * 0.4).toFixed(2));
+
+  const map = Math.min(95, expectedMap + 6);
+  const precision = Math.min(96, expectedPrecision + 5);
+  const recall = Math.min(95, expectedRecall + 5);
+  const simToReal = Math.min(80, simToRealReduction + 15);
+
+  setCosmosEstimate({
+    images,
+    videos,
+    sizeGB,
+    gpuHours,
+    map,
+    precision,
+    recall,
+    simToReal,
+  });
+
+  setExpectedMap(map);
+  setExpectedPrecision(precision);
+  setExpectedRecall(recall);
+  setSimToRealReduction(simToReal);
+};
+
+const aplicarDSR = () => {
+  setModoTrabajo("Validar Sim-to-Real");
+  setDatasetSize(10000);
+  setTrainingEpochs(120);
+  setValidationMode("Híbrido DSR");
+  setExpectedMap(88);
+  setExpectedPrecision(91);
+  setExpectedRecall(86);
+  setExpectedFps(25);
+  setSimToRealReduction(70);
+
+  setCosmosPrompt(
+    "Framework DSR: 70% datos simulados en Isaac Sim, 20% datos sintéticos hiperrealistas generados con NVIDIA Cosmos y 10% datos reales para validación Sim-to-Real en robótica móvil."
+  );
+};
+
+const exportarConfigCosmos = () => {
+  const config = {
+    robot,
+    ia,
+    escenario,
+    sensor,
+    modoTrabajo,
+    validationMode,
+    cosmos,
+    cosmosPrompt,
+    cosmosOptions,
+    datasetSize,
+    trainingEpochs,
+    expectedMap,
+    expectedPrecision,
+    expectedRecall,
+    expectedFps,
+    simToRealReduction,
+  };
+
+  const blob = new Blob([JSON.stringify(config, null, 2)], {
+    type: "application/json",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "configuracion_cosmos_twinia.json";
+  link.click();
+
+  URL.revokeObjectURL(url);
+};
+
+
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
@@ -690,31 +804,137 @@ export default function Home() {
 
                 )}
 
-              <Panel title="NVIDIA Cosmos">
-                <div className="flex items-center justify-between gap-4 mb-4">
-                  <p className="text-zinc-400 text-sm">
-                    Prompt para generación de video sintético.
-                  </p>
+<Panel title="NVIDIA Cosmos">
+  <div className="flex items-center justify-between gap-4 mb-4">
+    <p className="text-zinc-400 text-sm">
+      Generación sintética, prompts inteligentes y validación Sim-to-Real.
+    </p>
 
-                  <button
-                    type="button"
-                    onClick={() => setCosmos(!cosmos)}
-                    className={`px-5 py-2 rounded-full font-bold transition ${
-                      cosmos
-                        ? "bg-[#76B900] text-black"
-                        : "bg-zinc-800 text-zinc-300"
-                    }`}
-                  >
-                    {cosmos ? "Activado" : "Desactivado"}
-                  </button>
-                </div>
+    <button
+      type="button"
+      onClick={() => setCosmos(!cosmos)}
+      className={`px-5 py-2 rounded-full font-bold transition ${
+        cosmos ? "bg-[#76B900] text-black" : "bg-zinc-800 text-zinc-300"
+      }`}
+    >
+      {cosmos ? "Activado" : "Desactivado"}
+    </button>
+  </div>
 
-                <textarea
-                  value={cosmosPrompt}
-                  onChange={(e) => setCosmosPrompt(e.target.value)}
-                  className="w-full min-h-28 bg-zinc-900 border border-zinc-700 rounded-2xl p-3 outline-none focus:border-[#76B900]"
-                />
-              </Panel>
+  <div className="grid md:grid-cols-3 gap-3 mb-4">
+    <button
+      type="button"
+      onClick={generarPromptCosmos}
+      className="bg-[#76B900] text-black rounded-xl p-3 font-black"
+    >
+      Generar prompt IA
+    </button>
+
+    <button
+      type="button"
+      onClick={estimarCosmos}
+      className="bg-zinc-900 border border-[#76B900] text-[#76B900] rounded-xl p-3 font-black"
+    >
+      Estimar dataset
+    </button>
+
+    <button
+      type="button"
+      onClick={aplicarDSR}
+      className="bg-zinc-900 border border-zinc-700 rounded-xl p-3 font-black"
+    >
+      Aplicar DSR
+    </button>
+  </div>
+
+  <div className="grid grid-cols-2 md:grid-cols-6 gap-2 mb-4">
+    {Object.entries(cosmosOptions).map(([key, value]) => (
+      <button
+        key={key}
+        type="button"
+        onClick={() =>
+          setCosmosOptions({
+            ...cosmosOptions,
+            [key]: !value,
+          })
+        }
+        className={`rounded-xl p-3 text-sm font-bold border ${
+          value
+            ? "bg-[#76B900]/20 border-[#76B900] text-white"
+            : "bg-black border-zinc-800 text-zinc-500"
+        }`}
+      >
+        {value ? "✓ " : "+ "}
+        {key}
+      </button>
+    ))}
+  </div>
+
+  <textarea
+    value={cosmosPrompt}
+    onChange={(e) => setCosmosPrompt(e.target.value)}
+    className="w-full min-h-32 bg-zinc-900 border border-zinc-700 rounded-2xl p-3 outline-none focus:border-[#76B900]"
+  />
+
+  <div className="mt-4 grid md:grid-cols-4 gap-3">
+    <Info label="Imágenes estimadas" value={`${cosmosEstimate.images}`} />
+    <Info label="Videos sintéticos" value={`${cosmosEstimate.videos}`} />
+    <Info label="Tamaño estimado" value={`${cosmosEstimate.sizeGB} GB`} />
+    <Info label="Tiempo GPU" value={`${cosmosEstimate.gpuHours} h`} />
+  </div>
+
+  <div className="mt-4 bg-black border border-zinc-800 rounded-2xl p-4">
+    <h4 className="text-[#76B900] font-black mb-3">
+      Pipeline Cosmos → Isaac Sim → IA
+    </h4>
+
+    <div className="grid md:grid-cols-5 gap-2 text-center text-sm font-bold">
+      <div className="bg-zinc-900 rounded-xl p-3">Cosmos</div>
+      <div className="bg-zinc-900 rounded-xl p-3">Datos sintéticos</div>
+      <div className="bg-zinc-900 rounded-xl p-3">Isaac Sim</div>
+      <div className="bg-zinc-900 rounded-xl p-3">{ia}</div>
+      <div className="bg-zinc-900 rounded-xl p-3">Sim-to-Real</div>
+    </div>
+  </div>
+
+  <div className="mt-4 grid md:grid-cols-4 gap-3">
+    <Info label="mAP Cosmos" value={`${cosmosEstimate.map}%`} />
+    <Info label="Precisión Cosmos" value={`${cosmosEstimate.precision}%`} />
+    <Info label="Recall Cosmos" value={`${cosmosEstimate.recall}%`} />
+    <Info label="Brecha Sim-to-Real" value={`${cosmosEstimate.simToReal}%`} />
+  </div>
+
+  <div className="mt-4 bg-black border border-[#76B900]/40 rounded-2xl p-4">
+    <h4 className="text-[#76B900] font-black mb-2">
+      Distribución DSR recomendada
+    </h4>
+
+    <div className="grid md:grid-cols-3 gap-3">
+      <div className="bg-zinc-900 rounded-xl p-3">
+        <p className="text-zinc-400 text-sm">Isaac Sim</p>
+        <p className="font-black text-xl">70%</p>
+      </div>
+
+      <div className="bg-zinc-900 rounded-xl p-3">
+        <p className="text-zinc-400 text-sm">Cosmos</p>
+        <p className="font-black text-xl">20%</p>
+      </div>
+
+      <div className="bg-zinc-900 rounded-xl p-3">
+        <p className="text-zinc-400 text-sm">Datos reales</p>
+        <p className="font-black text-xl">10%</p>
+      </div>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    onClick={exportarConfigCosmos}
+    className="w-full mt-4 bg-[#76B900] text-black p-4 rounded-2xl font-black hover:scale-[1.01] transition"
+  >
+    Exportar configuración Cosmos
+  </button>
+</Panel>
             </div>
 
             <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-5 w-full h-full xl:justify-self-stretch">

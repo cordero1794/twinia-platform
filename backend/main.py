@@ -5,6 +5,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import uuid
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import os
 import shutil
 
@@ -132,7 +133,9 @@ async def create_experiment(
 
     experiment = {
         "experiment_id": experiment_id,
-        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "created_at": datetime.now(
+            ZoneInfo("America/Bogota")
+        ).strftime("%Y-%m-%d %H:%M:%S"),
         "robot": robot,
         "ia": ia,
         "escenario": escenario,
