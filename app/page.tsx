@@ -49,6 +49,14 @@ export default function Home() {
   const [robotFiles, setRobotFiles] = useState<File[]>([]);
   const [environmentFiles, setEnvironmentFiles] = useState<File[]>([]);
   const [datasetFiles, setDatasetFiles] = useState<File[]>([]);
+  const [datasetInfo, setDatasetInfo] = useState({
+  totalImages: 0,
+  totalVideos: 0,
+  totalLabels: 0,
+  totalZip: 0,
+  totalSizeMB: 0,
+  datasetReady: false,
+});
 
   const aplicarModoTrabajo = (modo: string) => {
     setModoTrabajo(modo);
@@ -558,10 +566,129 @@ export default function Home() {
               <UploadBox
                 title="Dataset / Data sintética"
                 description="Imágenes, videos, labels, ZIP."
-                onChange={setDatasetFiles}
+                onChange={(files) => {
+
+                  setDatasetFiles(files);
+
+                  let images = 0;
+                  let videos = 0;
+                  let labels = 0;
+                  let zips = 0;
+                  let totalSize = 0;
+
+                  files.forEach((file) => {
+
+                    const name = file.name.toLowerCase();
+
+                    totalSize += file.size;
+
+                    if (
+                      name.endsWith(".jpg") ||
+                      name.endsWith(".png") ||
+                      name.endsWith(".jpeg")
+                    ) {
+                      images++;
+                    }
+
+                    if (
+                      name.endsWith(".mp4") ||
+                      name.endsWith(".avi") ||
+                      name.endsWith(".mov")
+                    ) {
+                      videos++;
+                    }
+
+                    if (
+                      name.endsWith(".txt") ||
+                      name.endsWith(".json") ||
+                      name.endsWith(".xml")
+                    ) {
+                      labels++;
+                    }
+
+                    if (name.endsWith(".zip")) {
+                      zips++;
+                    }
+                  });
+
+                  setDatasetInfo({
+                    totalImages: images,
+                    totalVideos: videos,
+                    totalLabels: labels,
+                    totalZip: zips,
+                    totalSizeMB: Number((totalSize / 1024 / 1024).toFixed(2)),
+                    datasetReady: files.length > 0,
+                  });
+                }}
               />
 
               <PreviewGrid title="Archivos dataset" files={datasetPreview} />
+              {datasetInfo.datasetReady && (
+
+                  <div className="mt-4 bg-zinc-950 border border-[#76B900]/40 rounded-2xl p-4">
+
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-[#76B900] font-black text-lg">
+                        Dataset analizado
+                      </h4>
+
+                      <div className="bg-[#76B900] text-black px-4 py-1 rounded-full font-bold text-sm">
+                        LISTO
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+
+                      <div className="bg-black rounded-xl p-3 border border-zinc-800">
+                        <p className="text-zinc-500 text-xs">Imágenes</p>
+                        <p className="font-black text-xl">
+                          {datasetInfo.totalImages}
+                        </p>
+                      </div>
+
+                      <div className="bg-black rounded-xl p-3 border border-zinc-800">
+                        <p className="text-zinc-500 text-xs">Videos</p>
+                        <p className="font-black text-xl">
+                          {datasetInfo.totalVideos}
+                        </p>
+                      </div>
+
+                      <div className="bg-black rounded-xl p-3 border border-zinc-800">
+                        <p className="text-zinc-500 text-xs">Labels</p>
+                        <p className="font-black text-xl">
+                          {datasetInfo.totalLabels}
+                        </p>
+                      </div>
+
+                      <div className="bg-black rounded-xl p-3 border border-zinc-800">
+                        <p className="text-zinc-500 text-xs">ZIP</p>
+                        <p className="font-black text-xl">
+                          {datasetInfo.totalZip}
+                        </p>
+                      </div>
+
+                      <div className="bg-black rounded-xl p-3 border border-zinc-800">
+                        <p className="text-zinc-500 text-xs">Tamaño</p>
+                        <p className="font-black text-xl">
+                          {datasetInfo.totalSizeMB} MB
+                        </p>
+                      </div>
+
+                    </div>
+
+                    <div className="mt-4 bg-black border border-zinc-800 rounded-xl p-3">
+                      <p className="text-[#76B900] font-bold">
+                        Dataset listo para entrenamiento IA
+                      </p>
+
+                      <p className="text-zinc-400 text-sm mt-1">
+                        Los archivos se asociarán automáticamente al experimento FastAPI.
+                      </p>
+                    </div>
+
+                  </div>
+
+                )}
 
               <Panel title="NVIDIA Cosmos">
                 <div className="flex items-center justify-between gap-4 mb-4">
