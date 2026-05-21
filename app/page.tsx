@@ -225,20 +225,26 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
-                <h3 className="text-xl font-black mb-2">
-                  Vista previa del ambiente
-                </h3>
+              <div className="grid xl:grid-cols-2 gap-5 items-stretch">
+                <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl h-full">
+                  <h3 className="text-xl font-black mb-2">
+                    Vista previa del ambiente
+                  </h3>
 
-                <p className="text-zinc-400 mb-4 text-sm">
-                  Visualización 3D del escenario seleccionado.
-                </p>
+                  <p className="text-zinc-400 mb-4 text-sm">
+                    Visualización 3D del escenario seleccionado.
+                  </p>
 
-                <EnvironmentViewer escenario={escenario} />
-              </div>
+                  <div className="h-[430px] rounded-2xl overflow-hidden border border-zinc-800">
+                    <EnvironmentViewer escenario={escenario} />
+                  </div>
+                </div>
 
-              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
-                <ModelViewer ia={ia} />
+                <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl h-full">
+                  <div className="h-[520px] rounded-2xl overflow-hidden border border-zinc-800">
+                    <ModelViewer ia={ia} />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
