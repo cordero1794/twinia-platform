@@ -426,7 +426,8 @@ def generate_report(experiment_id: str):
                 margin-bottom: 8px;
             }}
 
-            button {{
+            button,
+            .btn {{
                 background: #76B900;
                 color: #000000;
                 border: none;
@@ -435,6 +436,9 @@ def generate_report(experiment_id: str):
                 font-weight: bold;
                 cursor: pointer;
                 margin-top: 20px;
+                text-decoration: none;
+                display: inline-block;
+                margin-right: 12px;
             }}
 
             .footer {{
