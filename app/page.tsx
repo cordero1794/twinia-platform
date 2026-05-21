@@ -470,7 +470,13 @@ const exportarConfigCosmos = () => {
                 <Selector
                   label="Robot"
                   value={robot}
-                  setValue={setRobot}
+                  setValue={(value) => {
+                    setRobot(value);
+
+                    if (value !== "Robot personalizado") {
+                      setRobotFiles([]);
+                    }
+                  }}
                   options={[
                     "TWINIA",
                     "BRAZO",
@@ -511,23 +517,12 @@ const exportarConfigCosmos = () => {
                     ]}
                   />
 
-                <Selector
-                  label="Robot"
-                  value={robot}
-                  setValue={(value) => {
-                    setRobot(value);
-
-                    if (value !== "Robot personalizado") {
-                      setRobotFiles([]);
-                    }
-                  }}
-                  options={[
-                    "TWINIA",
-                    "BRAZO",
-                    "HUMANOIDE",
-                    "Robot personalizado",
-                  ]}
-                />
+                  <Selector
+                    label="Sensor"
+                    value={sensor}
+                    setValue={setSensor}
+                    options={["RGB", "RGB-D", "LiDAR", "Ultrasonido"]}
+                  />
               </div>
 
               <Panel title="Flujo experimental">
