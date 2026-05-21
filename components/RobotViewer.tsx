@@ -28,28 +28,28 @@ const robotScale: Record<string, number> = {
   TWINIA: 0.1,
   BRAZO: 0.85,
   HUMANOIDE: 1.05,
-  "Robot personalizado": 0.24,
+  "Robot personalizado": 1,
 };
 
 const robotRotation: Record<string, [number, number, number]> = {
   TWINIA: [0, Math.PI / 2, 0],
   BRAZO: [0, -Math.PI / 5, 0],
   HUMANOIDE: [0, Math.PI, 0],
-  "Robot personalizado": [0, Math.PI / 2, 0],
+  "Robot personalizado": [0, 0, 0],
 };
 
 const robotPosition: Record<string, [number, number, number]> = {
   TWINIA: [0, 0.7, 0],
   BRAZO: [0, 0, 0],
   HUMANOIDE: [0, 0, 0],
-  "Robot personalizado": [0, 0.7, 0],
+  "Robot personalizado": [0, 0, 0],
 };
 
 const robotGridY: Record<string, number> = {
   TWINIA: -1.15,
   BRAZO: -0.2,
   HUMANOIDE: -0.3,
-  "Robot personalizado": -1.15,
+  "Robot personalizado": -0.8,
 };
 
 const robotColors: Record<string, string | null> = {
@@ -68,7 +68,6 @@ function RobotModel({
 }) {
   const modelPath = customModelUrl || robotModels[robot] || "/twinia.glb";
   const model = useGLTF(modelPath);
-
   const clonedScene = clone(model.scene);
 
   clonedScene.traverse((child) => {
@@ -96,15 +95,22 @@ function RobotModel({
         <primitive
           object={clonedScene}
           scale={customModelUrl ? 1 : robotScale[robot] || 1}
-          position={customModelUrl ? [0, 0, 0] : robotPosition[robot] || [0, 0, 0]}
-          rotation={customModelUrl ? [0, 0, 0] : robotRotation[robot] || [0, 0, 0]}
+          position={
+            customModelUrl ? [0, 0, 0] : robotPosition[robot] || [0, 0, 0]
+          }
+          rotation={
+            customModelUrl ? [0, 0, 0] : robotRotation[robot] || [0, 0, 0]
+          }
         />
       </Center>
     </Bounds>
   );
 }
 
-export default function RobotViewer({ robot, customModelUrl }: RobotViewerProps) {
+export default function RobotViewer({
+  robot,
+  customModelUrl,
+}: RobotViewerProps) {
   return (
     <div className="h-[550px] w-full rounded-3xl overflow-hidden border border-zinc-800 bg-black">
       <Canvas
@@ -138,7 +144,7 @@ export default function RobotViewer({ robot, customModelUrl }: RobotViewerProps)
         <pointLight position={[0, 3, -4]} intensity={0.45} color="#3b82f6" />
 
         <Grid
-          key={`grid-${robot}`}
+          key={`grid-${robot}-${customModelUrl || "default"}`}
           position={[0, customModelUrl ? -0.8 : robotGridY[robot] ?? -1.15, 0]}
           args={[24, 24]}
           cellColor="#1f1f1f"

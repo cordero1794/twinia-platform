@@ -305,7 +305,10 @@ export default function Home() {
 
             <div className="space-y-5">
               <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
-                <RobotViewer robot={robot} />
+                <RobotViewer
+                  robot={robot}
+                  customModelUrl={robotPreview[0]?.url}
+                  />
 
                 <div className="grid grid-cols-3 gap-3 mt-4">
                   <Badge title="Sim" value="Isaac Sim" />
@@ -495,10 +498,16 @@ export default function Home() {
                   onChange={setSimToRealReduction}
                 />
               </Panel>
-                            <UploadBox
+              <UploadBox
                 title="Robot personalizado"
-                description=".usd .urdf .obj .fbx .gltf .glb"
-                onChange={setRobotFiles}
+                description=".glb .gltf recomendado para vista previa 3D"
+                onChange={(files) => {
+                  setRobotFiles(files);
+
+                  if (files.length > 0) {
+                    setRobot("Robot personalizado");
+                  }
+                }}
               />
 
               <PreviewGrid title="Archivos de robot" files={robotPreview} />
