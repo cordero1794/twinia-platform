@@ -359,22 +359,25 @@ const exportarConfigCosmos = () => {
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
-      <section className="relative px-4 md:px-8 py-10 max-w-[1600px] mx-auto">
-        <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,#76b900,transparent_35%),radial-gradient(circle_at_bottom_right,#1d4ed8,transparent_30%)]" />
+  <section className="relative px-8 md:px-16 py-12 max-w-[1900px] mx-auto">
 
-        <div className="relative z-10">
-          <nav className="flex justify-between items-center mb-16">
-            <div>
-              <h1 className="text-3xl font-black tracking-wide">
-                TWINIA<span className="text-[#76B900]">.</span>AI
-              </h1>
+    <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,#76b900,transparent_35%),radial-gradient(circle_at_bottom_right,#1d4ed8,transparent_30%)]" />
 
-              <p className="text-sm text-zinc-400">
-                Physical AI • Digital Twins • Synthetic Data
-              </p>
-            </div>
+    <div className="relative z-10">
 
-<div className="w-[820px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
+      <nav className="flex justify-between items-start mb-20">
+
+        <div>
+          <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
+            TWINIA<span className="text-[#76B900]">.</span>AI
+          </h1>
+
+          <p className="text-lg text-zinc-300 mt-3">
+            Physical AI • Digital Twins • Synthetic Data
+          </p>
+        </div>
+
+<div className="w-[780px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
   
   <div className="flex items-center justify-between mb-4">
     <div>
