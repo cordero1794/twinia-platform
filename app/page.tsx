@@ -104,11 +104,9 @@ export default function Home() {
       formData.append("sim_to_real_reduction", String(simToRealReduction));
 
       robotFiles.forEach((file) => formData.append("robot_files", file));
-
       environmentFiles.forEach((file) =>
         formData.append("environment_files", file)
       );
-
       datasetFiles.forEach((file) => formData.append("dataset_files", file));
 
       const response = await fetch(`${BACKEND_URL}/create-experiment`, {
@@ -160,11 +158,11 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
-      <section className="relative pl-2 pr-2 md:pl-4 md:pr-4 py-6 w-full max-w-[1850px] mx-auto">
+      <section className="relative px-4 md:px-8 py-10 max-w-7xl mx-auto">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,#76b900,transparent_35%),radial-gradient(circle_at_bottom_right,#1d4ed8,transparent_30%)]" />
 
-        <div className="relative z-10 w-full">
-          <nav className="flex justify-between items-center mb-12">
+        <div className="relative z-10">
+          <nav className="flex justify-between items-center mb-16">
             <div>
               <h1 className="text-3xl font-black tracking-wide">
                 TWINIA<span className="text-[#76B900]">.</span>AI
@@ -180,13 +178,13 @@ export default function Home() {
             </button>
           </nav>
 
-          <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-6 items-center mb-6 w-full">
-            <div className="w-full max-w-[900px]">
+          <div className="grid lg:grid-cols-2 gap-8 items-start mb-10">
+            <div>
               <p className="text-[#76B900] font-bold mb-4">
                 PLATAFORMA DOCTORAL DE IA FÍSICA
               </p>
 
-              <h2 className="text-6xl md:text-[7rem] xl:text-[8rem] font-black leading-[0.9] tracking-[-0.04em] mb-8 max-w-full">
+              <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
                 Generador personalizado de entrenamiento robótico.
               </h2>
 
@@ -216,20 +214,18 @@ export default function Home() {
               )}
             </div>
 
-            <div className="space-y-5 w-full">
-              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl w-full min-h-[860px]">
-                <div className="h-[760px] w-full">
-                  <RobotViewer robot={robot} />
-                </div>
+            <div className="space-y-5">
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
+                <RobotViewer robot={robot} />
 
-                <div className="grid grid-cols-3 gap-4 mt-6">
+                <div className="grid grid-cols-3 gap-3 mt-4">
                   <Badge title="Sim" value="Isaac Sim" />
                   <Badge title="Data" value="Cosmos" />
                   <Badge title="Backend" value="FastAPI" />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 2xl:grid-cols-[1fr_1fr] gap-4 items-stretch w-full">
+              <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6 items-stretch w-full max-w-[1400px] mx-auto">
                 <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
                   <h3 className="text-xl font-black mb-2">
                     Vista previa del ambiente
@@ -239,13 +235,13 @@ export default function Home() {
                     Visualización 3D del escenario seleccionado.
                   </p>
 
-                  <div className="h-[650px] rounded-2xl overflow-hidden border border-zinc-800">
+                  <div className="h-[520px] rounded-2xl overflow-hidden border border-zinc-800">
                     <EnvironmentViewer escenario={escenario} />
                   </div>
                 </div>
 
                 <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-                  <div className="h-[650px] w-full rounded-2xl overflow-hidden border border-zinc-800">
+                  <div className="h-[520px] w-full rounded-2xl overflow-hidden border border-zinc-800">
                     <ModelViewer ia={ia} />
                   </div>
                 </div>
@@ -357,7 +353,8 @@ export default function Home() {
                   onChange={setTrainingEpochs}
                 />
               </Panel>
-                            <Panel title="Métricas esperadas">
+
+              <Panel title="Métricas esperadas">
                 <ControlSlider
                   label="mAP esperado (%)"
                   value={expectedMap}
@@ -410,10 +407,7 @@ export default function Home() {
                 onChange={setRobotFiles}
               />
 
-              <PreviewGrid
-                title="Archivos de robot"
-                files={robotPreview}
-              />
+              <PreviewGrid title="Archivos de robot" files={robotPreview} />
 
               <UploadBox
                 title="Ambiente personalizado"
@@ -432,10 +426,7 @@ export default function Home() {
                 onChange={setDatasetFiles}
               />
 
-              <PreviewGrid
-                title="Archivos dataset"
-                files={datasetPreview}
-              />
+              <PreviewGrid title="Archivos dataset" files={datasetPreview} />
 
               <Panel title="NVIDIA Cosmos">
                 <div className="flex items-center justify-between gap-4 mb-4">
@@ -465,9 +456,7 @@ export default function Home() {
             </div>
 
             <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-5 w-full max-w-[520px] xl:justify-self-end">
-              <h3 className="text-3xl font-black mb-5">
-                Resumen
-              </h3>
+              <h3 className="text-3xl font-black mb-5">Resumen</h3>
 
               <div className="space-y-3">
                 <Info label="Robot" value={robot} />
@@ -483,26 +472,16 @@ export default function Home() {
                 <Info label="Precisión" value={`${expectedPrecision}%`} />
                 <Info label="Recall" value={`${expectedRecall}%`} />
                 <Info label="FPS" value={`${expectedFps}`} />
-
                 <Info
                   label="Sim-to-Real"
                   value={`${simToRealReduction}% reducción`}
                 />
-
-                <Info
-                  label="Archivos robot"
-                  value={`${robotFiles.length}`}
-                />
-
+                <Info label="Archivos robot" value={`${robotFiles.length}`} />
                 <Info
                   label="Archivos ambiente"
                   value={`${environmentFiles.length}`}
                 />
-
-                <Info
-                  label="Archivos dataset"
-                  value={`${datasetFiles.length}`}
-                />
+                <Info label="Archivos dataset" value={`${datasetFiles.length}`} />
               </div>
 
               <button
@@ -523,9 +502,7 @@ export default function Home() {
 
               {backendStatus && (
                 <div className="mt-5 bg-black border border-zinc-800 rounded-2xl p-4">
-                  <p className="text-[#76B900] font-bold">
-                    {backendStatus}
-                  </p>
+                  <p className="text-[#76B900] font-bold">{backendStatus}</p>
 
                   {experimentId && (
                     <p className="text-zinc-400 mt-2 break-all">
@@ -550,7 +527,6 @@ export default function Home() {
                         <p className="font-bold text-[#76B900]">
                           ID: {exp.experiment_id}
                         </p>
-
                         <p>Robot: {exp.robot}</p>
                         <p>IA: {exp.ia}</p>
                         <p>Escenario: {exp.escenario}</p>
@@ -600,9 +576,7 @@ function Selector({
         className="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-2.5 text-sm outline-none focus:border-[#76B900]"
       >
         {options.map((option) => (
-          <option key={option}>
-            {option}
-          </option>
+          <option key={option}>{option}</option>
         ))}
       </select>
     </div>
@@ -627,13 +601,8 @@ function ControlSlider({
   return (
     <div className="mt-4">
       <div className="flex justify-between mb-1">
-        <label className="text-zinc-300 font-semibold text-sm">
-          {label}
-        </label>
-
-        <span className="text-[#76B900] font-bold text-sm">
-          {value}
-        </span>
+        <label className="text-zinc-300 font-semibold text-sm">{label}</label>
+        <span className="text-[#76B900] font-bold text-sm">{value}</span>
       </div>
 
       <input
@@ -658,10 +627,7 @@ function Panel({
 }) {
   return (
     <div className="mt-4 bg-black border border-zinc-800 rounded-2xl p-3">
-      <h4 className="text-base font-bold mb-3">
-        {title}
-      </h4>
-
+      <h4 className="text-base font-bold mb-3">{title}</h4>
       {children}
     </div>
   );
@@ -678,29 +644,15 @@ function UploadBox({
 }) {
   return (
     <div className="mt-4 bg-black border border-zinc-800 rounded-2xl p-3">
-      <h4 className="text-base font-bold mb-2">
-        {title}
-      </h4>
+      <h4 className="text-base font-bold mb-2">{title}</h4>
 
-      <p className="text-zinc-400 mb-3 text-sm">
-        {description}
-      </p>
+      <p className="text-zinc-400 mb-3 text-sm">{description}</p>
 
       <input
         type="file"
         multiple
-        onChange={(e) =>
-          onChange(Array.from(e.target.files || []))
-        }
-        className="block w-full text-sm text-zinc-300
-        file:mr-3
-        file:rounded-xl
-        file:border-0
-        file:bg-[#76B900]
-        file:px-3
-        file:py-2
-        file:font-bold
-        file:text-black"
+        onChange={(e) => onChange(Array.from(e.target.files || []))}
+        className="block w-full text-sm text-zinc-300 file:mr-3 file:rounded-xl file:border-0 file:bg-[#76B900] file:px-3 file:py-2 file:font-bold file:text-black"
       />
     </div>
   );
@@ -719,15 +671,11 @@ function PreviewGrid({
 }) {
   return (
     <div className="mt-4">
-      <h4 className="text-base font-bold mb-2">
-        {title}
-      </h4>
+      <h4 className="text-base font-bold mb-2">{title}</h4>
 
       <div className="grid md:grid-cols-2 gap-3">
         {files.length === 0 && (
-          <div className="text-zinc-500 text-sm">
-            No hay archivos cargados.
-          </div>
+          <div className="text-zinc-500 text-sm">No hay archivos cargados.</div>
         )}
 
         {files.map((file, index) => (
@@ -743,13 +691,9 @@ function PreviewGrid({
               />
             )}
 
-            <p className="font-bold break-all text-sm">
-              {file.name}
-            </p>
+            <p className="font-bold break-all text-sm">{file.name}</p>
 
-            <p className="text-zinc-400 text-xs">
-              {file.type || "Archivo"}
-            </p>
+            <p className="text-zinc-400 text-xs">{file.type || "Archivo"}</p>
           </div>
         ))}
       </div>
@@ -757,42 +701,20 @@ function PreviewGrid({
   );
 }
 
-function Info({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function Info({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-zinc-900 rounded-2xl p-3.5 border border-zinc-800">
-      <p className="text-zinc-500 text-sm">
-        {label}
-      </p>
-
-      <p className="font-bold">
-        {value}
-      </p>
+      <p className="text-zinc-500 text-sm">{label}</p>
+      <p className="font-bold">{value}</p>
     </div>
   );
 }
 
-function Badge({
-  title,
-  value,
-}: {
-  title: string;
-  value: string;
-}) {
+function Badge({ title, value }: { title: string; value: string }) {
   return (
     <div className="bg-zinc-900 rounded-2xl p-3.5">
-      <p className="text-zinc-400 text-sm">
-        {title}
-      </p>
-
-      <p className="font-bold">
-        {value}
-      </p>
+      <p className="text-zinc-400 text-sm">{title}</p>
+      <p className="font-bold">{value}</p>
     </div>
   );
 }
