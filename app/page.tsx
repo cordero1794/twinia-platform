@@ -158,7 +158,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
-      <section className="relative px-8 py-10 max-w-7xl mx-auto">
+      <section className="relative px-4 md:px-8 py-10 max-w-7xl mx-auto">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,#76b900,transparent_35%),radial-gradient(circle_at_bottom_right,#1d4ed8,transparent_30%)]" />
 
         <div className="relative z-10">
@@ -178,7 +178,7 @@ export default function Home() {
             </button>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-10 items-start mb-14">
+          <div className="grid lg:grid-cols-2 gap-8 items-start mb-10">
             <div>
               <p className="text-[#76B900] font-bold mb-4">
                 PLATAFORMA DOCTORAL DE IA FÍSICA
@@ -243,9 +243,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-[0.78fr_1.08fr] gap-3 items-start max-w-[1700px] ml-[-70px] mt-[-420px]">
-            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-3 max-w-[620px]">
-              <h3 className="text-[34px] font-black mb-1 leading-none">
+          <div className="grid grid-cols-1 xl:grid-cols-[0.95fr_0.75fr] gap-6 items-start w-full max-w-7xl mx-auto mt-8">
+            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-4 w-full">
+              <h3 className="text-[32px] font-black leading-none mb-2">
                 Configuración experimental
               </h3>
 
@@ -449,8 +449,8 @@ export default function Home() {
               </Panel>
             </div>
 
-            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-5 mt-[110px]">
-              <h3 className="text-4xl font-black mb-5">Resumen</h3>
+            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-5 w-full max-w-[520px] xl:justify-self-end">
+              <h3 className="text-3xl font-black mb-5">Resumen</h3>
 
               <div className="space-y-3">
                 <Info label="Robot" value={robot} />
