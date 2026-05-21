@@ -313,11 +313,11 @@ export default function Home() {
             <div className="space-y-5">
               <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
                 <RobotViewer
-                    robot={robot}
-                    customModelUrl={
-                      robot === "Robot personalizado" ? robotPreview[0]?.url : undefined
-                    }
-                  />
+                  robot={robot}
+                  customModelUrl={
+                    robot === "Robot personalizado" ? robotPreview[0]?.url : undefined
+                  }
+                />
 
                 <div className="grid grid-cols-3 gap-3 mt-4">
                   <Badge title="Sim" value="Isaac Sim" />
@@ -787,8 +787,22 @@ function UploadBox({
       <input
         type="file"
         multiple
-        onChange={(e) => onChange(Array.from(e.target.files || []))}
-        className="block w-full text-sm text-zinc-300 file:mr-3 file:rounded-xl file:border-0 file:bg-[#76B900] file:px-3 file:py-2 file:font-bold file:text-black"
+        onChange={(e) => {
+          const files = Array.from(e.target.files || []);
+
+          onChange(files);
+
+          e.target.value = "";
+        }}
+        className="block w-full text-sm text-zinc-300
+        file:mr-3
+        file:rounded-xl
+        file:border-0
+        file:bg-[#76B900]
+        file:px-3
+        file:py-2
+        file:font-bold
+        file:text-black"
       />
     </div>
   );
