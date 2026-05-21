@@ -480,22 +480,14 @@ def generate_report(experiment_id: str):
                     Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos
                 </p>
                 <button onclick="window.print()">Descargar / Imprimir PDF</button>
-                <a
-                    href="/export-usd/{experiment_id}"
-                    target="_blank"
-                    style="
-                        margin-left:12px;
-                        background:#76B900;
-                        color:black;
-                        padding:12px 22px;
-                        border-radius:12px;
-                        text-decoration:none;
-                        font-weight:bold;
-                        display:inline-block;
-                    "
-                >
-                    Descargar USD Omniverse
-                </a>
+<a
+    href="/export-usd/{experiment_id}"
+    target="_blank"
+    class="btn"
+    style="text-decoration:none;"
+>
+    Descargar USD Omniverse
+</a>
             </div>
 
             <div class="card">
