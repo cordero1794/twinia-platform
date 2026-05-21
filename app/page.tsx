@@ -374,7 +374,7 @@ const exportarConfigCosmos = () => {
               </p>
             </div>
 
-<div className="w-[920px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
+<div className="w-[800px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
   
   <div className="flex items-center justify-between mb-4">
     <div>
@@ -423,14 +423,14 @@ const exportarConfigCosmos = () => {
 </div>
           </nav>
 
-          <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start mb-10">
-            <div className="space-y-6">
+          <div className="grid lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center mt-10">
+            <div className="space-y-6 flex flex-col justify-center min-h-[700px]">
               <div>
                 <p className="text-[#76B900] font-bold mb-4">
                   PLATAFORMA DOCTORAL DE IA FÍSICA
                 </p>
 
-                <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
+                <h2 className="text-6xl md:text-8xl font-black leading-[0.95] mb-8 max-w-[900px]">
                   Generador personalizado de entrenamiento robótico.
                 </h2>
 
