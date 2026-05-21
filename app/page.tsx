@@ -367,7 +367,7 @@ const exportarConfigCosmos = () => {
 
       <nav className="flex justify-between items-start mb-20">
 
-        <div className="mt-60">
+        <div className="mt-60  ml-20">
           <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
             TWINIA<span className="text-[#76B900]">.</span>AI
           </h1>
@@ -434,7 +434,7 @@ const exportarConfigCosmos = () => {
                 </p>
 
                 <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
-                  Generador personalizado de entrenamiento robótico.
+                  Generador Personalizado de Entrenamiento Robótico.
                 </h2>
 
                 <p className="text-zinc-300 text-lg leading-relaxed mb-8">
