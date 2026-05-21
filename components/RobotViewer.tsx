@@ -14,6 +14,7 @@ import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
 type RobotViewerProps = {
   robot: string;
+  customModelUrl?: string;
 };
 
 const robotModels: Record<string, string> = {
@@ -24,7 +25,7 @@ const robotModels: Record<string, string> = {
 };
 
 const robotScale: Record<string, number> = {
-  TWINIA: 0.10,
+  TWINIA: 0.1,
   BRAZO: 0.85,
   HUMANOIDE: 1.05,
   "Robot personalizado": 0.24,
@@ -58,9 +59,14 @@ const robotColors: Record<string, string | null> = {
   "Robot personalizado": null,
 };
 
-function RobotModel({ robot }: { robot: string }) {
-  const modelPath = robotModels[robot] || "/twinia.glb";
-
+function RobotModel({
+  robot,
+  customModelUrl,
+}: {
+  robot: string;
+  customModelUrl?: string;
+}) {
+  const modelPath = customModelUrl || robotModels[robot] || "/twinia.glb";
   const model = useGLTF(modelPath);
 
   const clonedScene = clone(model.scene);
@@ -69,7 +75,7 @@ function RobotModel({ robot }: { robot: string }) {
     if ((child as THREE.Mesh).isMesh) {
       const mesh = child as THREE.Mesh;
 
-      if (robotColors[robot]) {
+      if (!customModelUrl && robotColors[robot]) {
         mesh.material = new THREE.MeshStandardMaterial({
           color: robotColors[robot]!,
           metalness: 0.45,
@@ -89,16 +95,16 @@ function RobotModel({ robot }: { robot: string }) {
       <Center>
         <primitive
           object={clonedScene}
-          scale={robotScale[robot] || 1}
-          position={robotPosition[robot] || [0, 0, 0]}
-          rotation={robotRotation[robot] || [0, 0, 0]}
+          scale={customModelUrl ? 1 : robotScale[robot] || 1}
+          position={customModelUrl ? [0, 0, 0] : robotPosition[robot] || [0, 0, 0]}
+          rotation={customModelUrl ? [0, 0, 0] : robotRotation[robot] || [0, 0, 0]}
         />
       </Center>
     </Bounds>
   );
 }
 
-export default function RobotViewer({ robot }: RobotViewerProps) {
+export default function RobotViewer({ robot, customModelUrl }: RobotViewerProps) {
   return (
     <div className="h-[550px] w-full rounded-3xl overflow-hidden border border-zinc-800 bg-black">
       <Canvas
@@ -129,15 +135,11 @@ export default function RobotViewer({ robot }: RobotViewerProps) {
           color="#76B900"
         />
 
-        <pointLight
-          position={[0, 3, -4]}
-          intensity={0.45}
-          color="#3b82f6"
-        />
+        <pointLight position={[0, 3, -4]} intensity={0.45} color="#3b82f6" />
 
         <Grid
           key={`grid-${robot}`}
-          position={[0, robotGridY[robot] ?? -1.15, 0]}
+          position={[0, customModelUrl ? -0.8 : robotGridY[robot] ?? -1.15, 0]}
           args={[24, 24]}
           cellColor="#1f1f1f"
           sectionColor="#76B900"
@@ -145,12 +147,9 @@ export default function RobotViewer({ robot }: RobotViewerProps) {
           fadeStrength={1.2}
         />
 
-        <RobotModel robot={robot} />
+        <RobotModel robot={robot} customModelUrl={customModelUrl} />
 
-        <Environment
-          preset="warehouse"
-          environmentIntensity={0.45}
-        />
+        <Environment preset="warehouse" environmentIntensity={0.45} />
 
         <OrbitControls
           makeDefault

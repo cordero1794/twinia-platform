@@ -12,6 +12,7 @@ import {
 
 type EnvironmentViewerProps = {
   escenario: string;
+  customEnvironmentUrl?: string;
 };
 
 const environmentModels: Record<string, string> = {
@@ -26,12 +27,13 @@ const environmentScale: Record<string, number> = {
 
 function EnvironmentModel({
   escenario,
+  customEnvironmentUrl,
 }: {
   escenario: string;
+  customEnvironmentUrl?: string;
 }) {
   const environmentPath =
-    environmentModels[escenario] ||
-    "/ambientes/garciame_opt.glb";
+    customEnvironmentUrl || environmentModels[escenario] || "/ambientes/garciame_opt.glb";
 
   const model = useGLTF(environmentPath);
 
@@ -40,9 +42,9 @@ function EnvironmentModel({
       <Center>
         <primitive
           object={model.scene}
-          scale={environmentScale[escenario] || 1}
+          scale={customEnvironmentUrl ? 1 : environmentScale[escenario] || 1}
           position={[0, 0, 0]}
-          rotation={[0, Math.PI / 2, 0]}
+          rotation={customEnvironmentUrl ? [0, 0, 0] : [0, Math.PI / 2, 0]}
         />
       </Center>
     </Bounds>
@@ -51,6 +53,7 @@ function EnvironmentModel({
 
 export default function EnvironmentViewer({
   escenario,
+  customEnvironmentUrl,
 }: EnvironmentViewerProps) {
   return (
     <div className="h-[450px] w-full rounded-3xl overflow-hidden border border-zinc-800 bg-black">
@@ -65,23 +68,11 @@ export default function EnvironmentViewer({
 
         <ambientLight intensity={1} />
 
-        <directionalLight
-          castShadow
-          position={[8, 12, 8]}
-          intensity={1.6}
-        />
+        <directionalLight castShadow position={[8, 12, 8]} intensity={1.6} />
 
-        <spotLight
-          position={[-8, 10, 8]}
-          intensity={0.8}
-          color="#76B900"
-        />
+        <spotLight position={[-8, 10, 8]} intensity={0.8} color="#76B900" />
 
-        <pointLight
-          position={[0, 6, -6]}
-          intensity={0.5}
-          color="#3b82f6"
-        />
+        <pointLight position={[0, 6, -6]} intensity={0.5} color="#3b82f6" />
 
         <Grid
           position={[0, -0.01, 0]}
@@ -92,12 +83,12 @@ export default function EnvironmentViewer({
           fadeStrength={1}
         />
 
-        <EnvironmentModel escenario={escenario} />
-
-        <Environment
-          preset="warehouse"
-          environmentIntensity={0.4}
+        <EnvironmentModel
+          escenario={escenario}
+          customEnvironmentUrl={customEnvironmentUrl}
         />
+
+        <Environment preset="warehouse" environmentIntensity={0.4} />
 
         <OrbitControls
           makeDefault
