@@ -408,7 +408,7 @@ const exportarConfigCosmos = () => {
     </button>
 
     <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
-      YOLO
+      Twinia.AI
     </button>
 
     <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
@@ -416,7 +416,7 @@ const exportarConfigCosmos = () => {
     </button>
 
     <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
-      ROS2
+      Datos Sinteticos
     </button>
 
   </div>
