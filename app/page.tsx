@@ -158,11 +158,11 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
-      <section className="relative px-4 md:px-8 py-10 max-w-7xl mx-auto">
+      <section className="relative pl-2 pr-2 md:pl-4 md:pr-4 py-6 w-full max-w-[1850px] mx-auto">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,#76b900,transparent_35%),radial-gradient(circle_at_bottom_right,#1d4ed8,transparent_30%)]" />
 
-        <div className="relative z-10">
-          <nav className="flex justify-between items-center mb-16">
+        <div className="relative z-10 w-full">
+          <nav className="flex justify-between items-center mb-12">
             <div>
               <h1 className="text-3xl font-black tracking-wide">
                 TWINIA<span className="text-[#76B900]">.</span>AI
@@ -178,7 +178,7 @@ export default function Home() {
             </button>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-8 items-start mb-10">
+          <div className="grid lg:grid-cols-[0.72fr_1.28fr] gap-4 items-start mb-6 w-full">
             <div>
               <p className="text-[#76B900] font-bold mb-4">
                 PLATAFORMA DOCTORAL DE IA FÍSICA
@@ -214,8 +214,8 @@ export default function Home() {
               )}
             </div>
 
-            <div className="space-y-5">
-              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
+            <div className="space-y-5 w-full">
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl w-full">
                 <RobotViewer robot={robot} />
 
                 <div className="grid grid-cols-3 gap-3 mt-4">
@@ -225,7 +225,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6 items-stretch w-full max-w-[1400px] mx-auto">
+              <div className="grid grid-cols-1 2xl:grid-cols-[1fr_1fr] gap-4 items-stretch w-full">
                 <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
                   <h3 className="text-xl font-black mb-2">
                     Vista previa del ambiente
@@ -235,13 +235,13 @@ export default function Home() {
                     Visualización 3D del escenario seleccionado.
                   </p>
 
-                  <div className="h-[520px] rounded-2xl overflow-hidden border border-zinc-800">
+                  <div className="h-[650px] rounded-2xl overflow-hidden border border-zinc-800">
                     <EnvironmentViewer escenario={escenario} />
                   </div>
                 </div>
 
                 <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-                  <div className="h-[520px] w-full rounded-2xl overflow-hidden border border-zinc-800">
+                  <div className="h-[650px] w-full rounded-2xl overflow-hidden border border-zinc-800">
                     <ModelViewer ia={ia} />
                   </div>
                 </div>
@@ -353,8 +353,7 @@ export default function Home() {
                   onChange={setTrainingEpochs}
                 />
               </Panel>
-
-              <Panel title="Métricas esperadas">
+                            <Panel title="Métricas esperadas">
                 <ControlSlider
                   label="mAP esperado (%)"
                   value={expectedMap}
