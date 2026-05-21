@@ -178,76 +178,76 @@ export default function Home() {
             </button>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-8 items-start mb-10">
-            <div>
-              <p className="text-[#76B900] font-bold mb-4">
-                PLATAFORMA DOCTORAL DE IA FÍSICA
-              </p>
+<div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start mb-10">
+  <div className="space-y-6">
+    <div>
+      <p className="text-[#76B900] font-bold mb-4">
+        PLATAFORMA DOCTORAL DE IA FÍSICA
+      </p>
 
-              <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
-                Generador personalizado de entrenamiento robótico.
-              </h2>
+      <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
+        Generador personalizado de entrenamiento robótico.
+      </h2>
 
-              <p className="text-zinc-300 text-lg leading-relaxed mb-8">
-                Cree pipelines personalizados para robots autónomos, gemelos
-                digitales, entrenamiento IA y generación de datos sintéticos.
-              </p>
+      <p className="text-zinc-300 text-lg leading-relaxed mb-8">
+        Cree pipelines personalizados para robots autónomos, gemelos digitales,
+        entrenamiento IA y generación de datos sintéticos.
+      </p>
 
-              <button
-                type="button"
-                onClick={crearExperimentoBackend}
-                className="bg-[#76B900] text-black px-7 py-4 rounded-xl font-bold hover:scale-105 transition"
-              >
-                Crear experimento FastAPI
-              </button>
+      <button
+        type="button"
+        onClick={crearExperimentoBackend}
+        className="bg-[#76B900] text-black px-7 py-4 rounded-xl font-bold hover:scale-105 transition"
+      >
+        Crear experimento FastAPI
+      </button>
 
-              {backendStatus && (
-                <div className="mt-5 bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
-                  <p className="text-[#76B900] font-bold">{backendStatus}</p>
+      {backendStatus && (
+        <div className="mt-5 bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+          <p className="text-[#76B900] font-bold">{backendStatus}</p>
 
-                  {experimentId && (
-                    <p className="text-zinc-400 mt-2">
-                      ID del experimento: {experimentId}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
+          {experimentId && (
+            <p className="text-zinc-400 mt-2">
+              ID del experimento: {experimentId}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
 
-            <div className="space-y-5">
-              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
-                <RobotViewer robot={robot} />
+    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
+      <h3 className="text-2xl font-black mb-2">
+        Vista previa del ambiente
+      </h3>
 
-                <div className="grid grid-cols-3 gap-3 mt-4">
-                  <Badge title="Sim" value="Isaac Sim" />
-                  <Badge title="Data" value="Cosmos" />
-                  <Badge title="Backend" value="FastAPI" />
-                </div>
-              </div>
+      <p className="text-zinc-400 mb-4 text-sm">
+        Visualización 3D del escenario seleccionado.
+      </p>
 
-              <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6 items-stretch w-full max-w-[1400px] mx-auto">
-                <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-                  <h3 className="text-xl font-black mb-2">
-                    Vista previa del ambiente
-                  </h3>
+      <div className="h-[620px] rounded-2xl overflow-hidden border border-zinc-800">
+        <EnvironmentViewer escenario={escenario} />
+      </div>
+    </div>
+  </div>
 
-                  <p className="text-zinc-400 mb-4 text-sm">
-                    Visualización 3D del escenario seleccionado.
-                  </p>
+  <div className="space-y-5">
+    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
+      <RobotViewer robot={robot} />
 
-                  <div className="h-[520px] rounded-2xl overflow-hidden border border-zinc-800">
-                    <EnvironmentViewer escenario={escenario} />
-                  </div>
-                </div>
+      <div className="grid grid-cols-3 gap-3 mt-4">
+        <Badge title="Sim" value="Isaac Sim" />
+        <Badge title="Data" value="Cosmos" />
+        <Badge title="Backend" value="FastAPI" />
+      </div>
+    </div>
 
-                <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-                  <div className="h-[520px] w-full rounded-2xl overflow-hidden border border-zinc-800">
-                    <ModelViewer ia={ia} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
+      <div className="h-[620px] w-full rounded-2xl overflow-hidden border border-zinc-800">
+        <ModelViewer ia={ia} />
+      </div>
+    </div>
+  </div>
+</div>
 
           <div className="grid grid-cols-1 xl:grid-cols-[0.95fr_0.75fr] gap-6 items-start w-full max-w-7xl mx-auto mt-8">
             <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-4 w-full">
