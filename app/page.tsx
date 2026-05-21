@@ -374,7 +374,7 @@ const exportarConfigCosmos = () => {
               </p>
             </div>
 
-<div className="w-[420px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
+<div className="w-[620px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
   
   <div className="flex items-center justify-between mb-4">
     <div>
@@ -394,8 +394,8 @@ const exportarConfigCosmos = () => {
 
   <div className="rounded-2xl overflow-hidden border border-zinc-800 mb-4">
     <iframe
-      className="w-full aspect-video"
-      src="https://www.youtube.com/watch?v=hFDcoX7s6rE&list=RDv_Mb25ASCr8&index=4"
+      className="w-full h-[320px]"
+      src="https://www.youtube.com/embed/aqz-KE-bpKQ"
       title="Omniverse"
       allowFullScreen
     />
