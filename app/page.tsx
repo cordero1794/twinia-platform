@@ -243,15 +243,18 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-[0.95fr_0.85fr] gap-6 items-start max-w-5xl mx-auto">
-            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-3">
-              <h3 className="text-2xl font-black mb-2">
-                Configuración experimental
-              </h3>
+          <div className="grid lg:grid-cols-[0.82fr_0.78fr] gap-4 items-start max-w-4xl mx-auto">
+  
+          <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-2.5">
+            
+            <h3 className="text-xl font-black mb-1">
+              Configuración experimental
+            </h3>
 
-              <p className="text-zinc-400 mb-6">
-                Personalice el pipeline robótico.
-              </p>
+            <p className="text-zinc-400 mb-3 text-sm">
+              Personalice el pipeline robótico.
+            </p>
+
 
               <div className="grid md:grid-cols-2 gap-4">
                 <Selector
