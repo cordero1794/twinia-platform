@@ -21,14 +21,13 @@ const EnvironmentViewer = dynamic(
 const BACKEND_URL = "https://twinia-backend.onrender.com";
 
 export default function Home() {
+
+  
   const [robot, setRobot] = useState("TWINIA");
   const [ia, setIa] = useState("YOLO");
   const [escenario, setEscenario] = useState("Parque urbano");
   const [sensor, setSensor] = useState("RGB");
   const [cosmos, setCosmos] = useState(true);
-  const [videoUrl, setVideoUrl] = useState(
-    "https://www.youtube.com/embed/NAVzjKNa6ro"
-  );
 
   const [modoTrabajo, setModoTrabajo] = useState("Generar dataset sintético");
   const [datasetSize, setDatasetSize] = useState(1000);
@@ -79,6 +78,7 @@ export default function Home() {
     precision: expectedPrecision,
     recall: expectedRecall,
     simToReal: simToRealReduction,
+
   });
 
   const aplicarModoTrabajo = (modo: string) => {
@@ -205,14 +205,11 @@ export default function Home() {
 
       formData.append("cosmos_options", JSON.stringify(cosmosOptions));
       formData.append("cosmos_estimate", JSON.stringify(cosmosEstimate));
-      formData.append(
-        "dsr_distribution",
-        JSON.stringify({
-          isaac_sim: 70,
-          cosmos: 20,
-          real_data: 10,
-        })
-      );
+      formData.append("dsr_distribution", JSON.stringify({
+        isaac_sim: 70,
+        cosmos: 20,
+        real_data: 10,
+      }));
 
       robotFiles.forEach((file) => formData.append("robot_files", file));
 
@@ -268,256 +265,238 @@ export default function Home() {
   const verReporte = (id: string) => {
     window.open(`${BACKEND_URL}/report/${id}`, "_blank");
   };
+const generarPromptCosmos = () => {
+  const condiciones = Object.entries(cosmosOptions)
+    .filter(([, value]) => value)
+    .map(([key]) => key)
+    .join(", ");
 
-  const generarPromptCosmos = () => {
-    const condiciones = Object.entries(cosmosOptions)
-      .filter(([, value]) => value)
-      .map(([key]) => key)
-      .join(", ");
+  const prompt = `Robot ${robot} operando en ${escenario}, usando sensor ${sensor}, para ${modoTrabajo}. Escenario hiperrealista con ${condiciones}, iluminación dinámica, física avanzada y validación ${validationMode}.`;
 
-    const prompt = `Robot ${robot} operando en ${escenario}, usando sensor ${sensor}, para ${modoTrabajo}. Escenario hiperrealista con ${condiciones}, iluminación dinámica, física avanzada y validación ${validationMode}.`;
+  setCosmosPrompt(prompt);
+};
 
-    setCosmosPrompt(prompt);
+const estimarCosmos = () => {
+  const factor = cosmos ? 1.4 : 1;
+  const images = Math.round(datasetSize * factor);
+  const videos = Math.max(1, Math.round(images / 3000));
+  const sizeGB = Number((images * 0.0012).toFixed(2));
+  const gpuHours = Number((trainingEpochs * 0.035 + videos * 0.4).toFixed(2));
+
+  const map = Math.min(95, expectedMap + 6);
+  const precision = Math.min(96, expectedPrecision + 5);
+  const recall = Math.min(95, expectedRecall + 5);
+  const simToReal = Math.min(80, simToRealReduction + 15);
+
+  setCosmosEstimate({
+    images,
+    videos,
+    sizeGB,
+    gpuHours,
+    map,
+    precision,
+    recall,
+    simToReal,
+  });
+
+  setExpectedMap(map);
+  setExpectedPrecision(precision);
+  setExpectedRecall(recall);
+  setSimToRealReduction(simToReal);
+};
+
+const aplicarDSR = () => {
+  setModoTrabajo("Validar Sim-to-Real");
+  setDatasetSize(10000);
+  setTrainingEpochs(120);
+  setValidationMode("Híbrido DSR");
+  setExpectedMap(88);
+  setExpectedPrecision(91);
+  setExpectedRecall(86);
+  setExpectedFps(25);
+  setSimToRealReduction(70);
+
+  setCosmosPrompt(
+    "Framework DSR: 70% datos simulados en Isaac Sim, 20% datos sintéticos hiperrealistas generados con NVIDIA Cosmos y 10% datos reales para validación Sim-to-Real en robótica móvil."
+  );
+};
+
+const exportarConfigCosmos = () => {
+  const config = {
+    robot,
+    ia,
+    escenario,
+    sensor,
+    modoTrabajo,
+    validationMode,
+    cosmos,
+    cosmosPrompt,
+    cosmosOptions,
+    datasetSize,
+    trainingEpochs,
+    expectedMap,
+    expectedPrecision,
+    expectedRecall,
+    expectedFps,
+    simToRealReduction,
   };
 
-  const estimarCosmos = () => {
-    const factor = cosmos ? 1.4 : 1;
-    const images = Math.round(datasetSize * factor);
-    const videos = Math.max(1, Math.round(images / 3000));
-    const sizeGB = Number((images * 0.0012).toFixed(2));
-    const gpuHours = Number((trainingEpochs * 0.035 + videos * 0.4).toFixed(2));
+  const blob = new Blob([JSON.stringify(config, null, 2)], {
+    type: "application/json",
+  });
 
-    const map = Math.min(95, expectedMap + 6);
-    const precision = Math.min(96, expectedPrecision + 5);
-    const recall = Math.min(95, expectedRecall + 5);
-    const simToReal = Math.min(80, simToRealReduction + 15);
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
 
-    setCosmosEstimate({
-      images,
-      videos,
-      sizeGB,
-      gpuHours,
-      map,
-      precision,
-      recall,
-      simToReal,
-    });
+  link.href = url;
+  link.download = "configuracion_cosmos_twinia.json";
+  link.click();
 
-    setExpectedMap(map);
-    setExpectedPrecision(precision);
-    setExpectedRecall(recall);
-    setSimToRealReduction(simToReal);
-  };
+  URL.revokeObjectURL(url);
+};
 
-  const aplicarDSR = () => {
-    setModoTrabajo("Validar Sim-to-Real");
-    setDatasetSize(10000);
-    setTrainingEpochs(120);
-    setValidationMode("Híbrido DSR");
-    setExpectedMap(88);
-    setExpectedPrecision(91);
-    setExpectedRecall(86);
-    setExpectedFps(25);
-    setSimToRealReduction(70);
 
-    setCosmosPrompt(
-      "Framework DSR: 70% datos simulados en Isaac Sim, 20% datos sintéticos hiperrealistas generados con NVIDIA Cosmos y 10% datos reales para validación Sim-to-Real en robótica móvil."
-    );
-  };
-
-  const exportarConfigCosmos = () => {
-    const config = {
-      robot,
-      ia,
-      escenario,
-      sensor,
-      modoTrabajo,
-      validationMode,
-      cosmos,
-      cosmosPrompt,
-      cosmosOptions,
-      datasetSize,
-      trainingEpochs,
-      expectedMap,
-      expectedPrecision,
-      expectedRecall,
-      expectedFps,
-      simToRealReduction,
-    };
-
-    const blob = new Blob([JSON.stringify(config, null, 2)], {
-      type: "application/json",
-    });
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = url;
-    link.download = "configuracion_cosmos_twinia.json";
-    link.click();
-
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
-      <section className="relative px-8 md:px-16 py-12 max-w-[1900px] mx-auto">
-        <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,#76b900,transparent_35%),radial-gradient(circle_at_bottom_right,#1d4ed8,transparent_30%)]" />
+  <section className="relative px-8 md:px-16 py-12 max-w-[1900px] mx-auto">
 
-        <div className="relative z-10">
-          <nav className="flex justify-between items-start mb-20">
-            <div className="mt-60 ml-35">
-              <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
-                TWINIA<span className="text-[#76B900]">.</span>IA
-              </h1>
+    <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,#76b900,transparent_35%),radial-gradient(circle_at_bottom_right,#1d4ed8,transparent_30%)]" />
 
-              <p className="text-lg text-zinc-300 mt-3">
-                Physical AI • Digital Twins • Synthetic Data
-              </p>
-            </div>
+    <div className="relative z-10">
 
-            <div className="w-[710px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-black">Tutorías IA</h3>
+      <nav className="flex justify-between items-start mb-20">
 
-                  <p className="text-zinc-400 text-xs">
-                    Omniverse · Isaac Sim · Cosmos
-                  </p>
-                </div>
+        <div className="mt-60 ml-35">
+          <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
+            TWINIA<span className="text-[#76B900]">.</span>IA
+          </h1>
 
-                <div className="bg-[#76B900] text-black px-3 py-1 rounded-full font-bold text-xs">
-                  LIVE
-                </div>
-              </div>
+          <p className="text-lg text-zinc-300 mt-3">
+            Physical AI • Digital Twins • Synthetic Data
+          </p>
+        </div>
 
-              <div className="rounded-2xl overflow-hidden border border-zinc-800 mb-4">
-                <iframe
-                  className="w-full h-[320px]"
-                  src={videoUrl}
-                  title="Tutorías IA"
-                  allowFullScreen
-                />
-              </div>
+<div className="w-[710px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
+  
+  <div className="flex items-center justify-between mb-4">
+    <div>
+      <h3 className="text-xl font-black">
+        Tutorías IA
+      </h3>
 
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setVideoUrl("https://www.youtube.com/embed/NAVzjKNa6ro")
-                  }
-                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
-                >
-                  Isaac Sim
-                </button>
+      <p className="text-zinc-400 text-xs">
+        Omniverse · Isaac Sim · Cosmos
+      </p>
+    </div>
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setVideoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
-                  }
-                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
-                >
-                  Twinia.AI
-                </button>
+    <div className="bg-[#76B900] text-black px-3 py-1 rounded-full font-bold text-xs">
+      LIVE
+    </div>
+  </div>
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setVideoUrl("https://www.youtube.com/embed/aqz-KE-bpKQ")
-                  }
-                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
-                >
-                  Cosmos
-                </button>
+  <div className="rounded-2xl overflow-hidden border border-zinc-800 mb-4">
+    <iframe
+      className="w-full h-[320px]"
+      src="https://www.youtube.com/embed/NAVzjKNa6ro?si=ARU06yt4PgDykX67" 
+      title="Omniverse"
+      allowFullScreen
+    />
+  </div>
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setVideoUrl("https://www.youtube.com/embed/ysz5S6PUM-U")
-                  }
-                  className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
-                >
-                  Datos Sintéticos
-                </button>
-              </div>
-            </div>
+  <div className="grid grid-cols-2 gap-2">
+
+    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
+      Isaac Sim
+    </button>
+
+    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
+      Twinia.AI
+    </button>
+
+    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
+      Cosmos
+    </button>
+
+    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
+      Datos Sinteticos
+    </button>
+
+  </div>
+</div>
           </nav>
 
           <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start mb-10">
             <div className="space-y-6">
               <div>
-                <div>
-                  <p className="text-[#76B900] font-bold mb-4 text-center">
-                    PLATAFORMA DOCTORAL DE IA FÍSICA
-                  </p>
+               <div className="">
+                <p className="text-[#76B900] font-bold mb-4 ">
+                  PLATAFORMA DOCTORAL DE IA FÍSICA
+                </p>
+                <div className="flex justify-center">
+                  <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6 text-center">
+                    Generador Personalizado De Entrenamiento Robótico.
+                  </h2>
+                </div>
+                <p className="text-zinc-300 text-lg leading-relaxed mb-8">
+                  Cree pipelines personalizados para robots autónomos, gemelos
+                  digitales, entrenamiento IA y generación de datos sintéticos.
+                </p>
 
-                  <div className="flex justify-center">
-                    <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6 text-center">
-                      Generador Personalizado De Entrenamiento Robótico.
-                    </h2>
-                  </div>
+                <button
+                  type="button"
+                  onClick={crearExperimentoBackend}
+                  className="bg-[#76B900] text-black px-7 py-4 rounded-xl font-bold hover:scale-105 transition"
+                >
+                  Crear experimento FastAPI
+                </button>
 
-                  <p className="text-zinc-300 text-lg leading-relaxed mb-8">
-                    Cree pipelines personalizados para robots autónomos, gemelos
-                    digitales, entrenamiento IA y generación de datos sintéticos.
-                  </p>
+                {backendStatus && (
+                  <div className="mt-5 bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
+                    <p className="text-[#76B900] font-bold">
+                      {backendStatus}
+                    </p>
 
-                  <button
-                    type="button"
-                    onClick={crearExperimentoBackend}
-                    className="bg-[#76B900] text-black px-7 py-4 rounded-xl font-bold hover:scale-105 transition"
-                  >
-                    Crear experimento FastAPI
-                  </button>
-
-                  {backendStatus && (
-                    <div className="mt-5 bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
-                      <p className="text-[#76B900] font-bold">
-                        {backendStatus}
+                    {experimentId && (
+                      <p className="text-zinc-400 mt-2">
+                        ID del experimento: {experimentId}
                       </p>
-
-                      {experimentId && (
-                        <p className="text-zinc-400 mt-2">
-                          ID del experimento: {experimentId}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-                  <h3 className="text-2xl font-black mb-2">
-                    Vista previa del ambiente
-                  </h3>
-
-                  <p className="text-zinc-400 mb-4 text-sm">
-                    Visualización 3D del escenario seleccionado.
-                  </p>
-
-                  <div className="h-[605px] rounded-2xl overflow-hidden border border-zinc-800">
-                    <EnvironmentViewer
-                      escenario={escenario}
-                      customEnvironmentUrl={
-                        escenario === "Ambiente personalizado"
-                          ? environmentPreview[0]?.url
-                          : undefined
-                      }
-                    />
+                    )}
                   </div>
-                </div>
+                )}
               </div>
 
-              <div className="space-y-5">
-                <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
-                  <RobotViewer
-                    robot={robot}
-                    customModelUrl={
-                      robot === "Robot personalizado"
-                        ? robotPreview[0]?.url
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
+                <h3 className="text-2xl font-black mb-2">
+                  Vista previa del ambiente
+                </h3>
+
+                <p className="text-zinc-400 mb-4 text-sm">
+                  Visualización 3D del escenario seleccionado.
+                </p>
+
+                <div className="h-[605px] rounded-2xl overflow-hidden border border-zinc-800">
+                  <EnvironmentViewer
+                    escenario={escenario}
+                    customEnvironmentUrl={
+                      escenario === "Ambiente personalizado"
+                        ? environmentPreview[0]?.url
                         : undefined
                     }
                   />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-5">
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
+                <RobotViewer
+                  robot={robot}
+                  customModelUrl={
+                    robot === "Robot personalizado" ? robotPreview[0]?.url : undefined
+                  }
+                />
+
                 <div className="grid grid-cols-3 gap-3 mt-4">
                   <Badge title="Sim" value="Isaac Sim" />
                   <Badge title="Data" value="Cosmos" />
