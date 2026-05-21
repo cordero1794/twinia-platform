@@ -178,7 +178,7 @@ export default function Home() {
             </button>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-start mb-16">
+          <div className="grid lg:grid-cols-2 gap-10 items-start mb-14">
             <div>
               <p className="text-[#76B900] font-bold mb-4">
                 PLATAFORMA DOCTORAL DE IA FÍSICA
@@ -214,46 +214,46 @@ export default function Home() {
               )}
             </div>
 
-            <div className="space-y-6">
-              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl">
+            <div className="space-y-5">
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
                 <RobotViewer robot={robot} />
 
-                <div className="grid grid-cols-3 gap-3 mt-5">
+                <div className="grid grid-cols-3 gap-3 mt-4">
                   <Badge title="Sim" value="Isaac Sim" />
                   <Badge title="Data" value="Cosmos" />
                   <Badge title="Backend" value="FastAPI" />
                 </div>
               </div>
 
-              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl">
-                <h3 className="text-2xl font-black mb-4">
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
+                <h3 className="text-xl font-black mb-2">
                   Vista previa del ambiente
                 </h3>
 
-                <p className="text-zinc-400 mb-5">
+                <p className="text-zinc-400 mb-4 text-sm">
                   Visualización 3D del escenario seleccionado.
                 </p>
 
                 <EnvironmentViewer escenario={escenario} />
               </div>
 
-              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl">
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
                 <ModelViewer ia={ia} />
               </div>
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-8">
-              <h3 className="text-3xl font-black mb-2">
+          <div className="grid lg:grid-cols-[1.35fr_0.75fr] gap-6 items-start">
+            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-6">
+              <h3 className="text-2xl font-black mb-2">
                 Configuración experimental
               </h3>
 
-              <p className="text-zinc-400 mb-8">
+              <p className="text-zinc-400 mb-6">
                 Personalice el pipeline robótico.
               </p>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-4">
                 <Selector
                   label="Robot"
                   value={robot}
@@ -301,7 +301,7 @@ export default function Home() {
               </div>
 
               <Panel title="Flujo experimental">
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-4">
                   <Selector
                     label="Modo de trabajo"
                     value={modoTrabajo}
@@ -444,15 +444,15 @@ export default function Home() {
                 <textarea
                   value={cosmosPrompt}
                   onChange={(e) => setCosmosPrompt(e.target.value)}
-                  className="w-full min-h-36 bg-zinc-900 border border-zinc-700 rounded-2xl p-4 outline-none focus:border-[#76B900]"
+                  className="w-full min-h-32 bg-zinc-900 border border-zinc-700 rounded-2xl p-4 outline-none focus:border-[#76B900]"
                 />
               </Panel>
             </div>
 
-            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-8">
-              <h3 className="text-3xl font-black mb-6">Resumen</h3>
+            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-6">
+              <h3 className="text-2xl font-black mb-5">Resumen</h3>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <Info label="Robot" value={robot} />
                 <Info label="IA" value={ia} />
                 <Info label="Ambiente" value={escenario} />
@@ -481,7 +481,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={crearExperimentoBackend}
-                className="w-full mt-8 bg-[#76B900] text-black p-5 rounded-2xl font-black hover:scale-105 transition"
+                className="w-full mt-6 bg-[#76B900] text-black p-4 rounded-2xl font-black hover:scale-105 transition"
               >
                 Crear experimento FastAPI
               </button>
@@ -489,7 +489,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={listarExperimentos}
-                className="w-full mt-4 bg-black border border-[#76B900] text-[#76B900] p-5 rounded-2xl font-black hover:bg-[#76B900] hover:text-black transition"
+                className="w-full mt-3 bg-black border border-[#76B900] text-[#76B900] p-4 rounded-2xl font-black hover:bg-[#76B900] hover:text-black transition"
               >
                 Listar experimentos
               </button>
@@ -508,7 +508,7 @@ export default function Home() {
 
               {experiments.length > 0 && (
                 <div className="mt-5 bg-black border border-zinc-800 rounded-2xl p-4">
-                  <h4 className="text-xl font-bold mb-4">
+                  <h4 className="text-lg font-bold mb-4">
                     Experimentos creados
                   </h4>
 
@@ -565,7 +565,7 @@ function Selector({
       <select
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-4 outline-none focus:border-[#76B900]"
+        className="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-3.5 outline-none focus:border-[#76B900]"
       >
         {options.map((option) => (
           <option key={option}>{option}</option>
@@ -591,7 +591,7 @@ function ControlSlider({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className="mt-6">
+    <div className="mt-5">
       <div className="flex justify-between mb-2">
         <label className="text-zinc-300 font-semibold">{label}</label>
         <span className="text-[#76B900] font-bold">{value}</span>
@@ -618,8 +618,8 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mt-8 bg-black border border-zinc-800 rounded-3xl p-6">
-      <h4 className="text-xl font-bold mb-4">{title}</h4>
+    <div className="mt-6 bg-black border border-zinc-800 rounded-3xl p-5">
+      <h4 className="text-lg font-bold mb-4">{title}</h4>
       {children}
     </div>
   );
@@ -635,10 +635,10 @@ function UploadBox({
   onChange: (files: File[]) => void;
 }) {
   return (
-    <div className="mt-8 bg-black border border-zinc-800 rounded-3xl p-6">
-      <h4 className="text-xl font-bold mb-2">{title}</h4>
+    <div className="mt-6 bg-black border border-zinc-800 rounded-3xl p-5">
+      <h4 className="text-lg font-bold mb-2">{title}</h4>
 
-      <p className="text-zinc-400 mb-4">{description}</p>
+      <p className="text-zinc-400 mb-4 text-sm">{description}</p>
 
       <input
         type="file"
@@ -662,12 +662,12 @@ function PreviewGrid({
   }[];
 }) {
   return (
-    <div className="mt-6">
-      <h4 className="text-xl font-bold mb-4">{title}</h4>
+    <div className="mt-5">
+      <h4 className="text-lg font-bold mb-3">{title}</h4>
 
       <div className="grid md:grid-cols-2 gap-4">
         {files.length === 0 && (
-          <div className="text-zinc-500">No hay archivos cargados.</div>
+          <div className="text-zinc-500 text-sm">No hay archivos cargados.</div>
         )}
 
         {files.map((file, index) => (
@@ -695,7 +695,7 @@ function PreviewGrid({
 
 function Info({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-zinc-900 rounded-2xl p-4 border border-zinc-800">
+    <div className="bg-zinc-900 rounded-2xl p-3.5 border border-zinc-800">
       <p className="text-zinc-500 text-sm">{label}</p>
       <p className="font-bold">{value}</p>
     </div>
@@ -704,7 +704,7 @@ function Info({ label, value }: { label: string; value: string }) {
 
 function Badge({ title, value }: { title: string; value: string }) {
   return (
-    <div className="bg-zinc-900 rounded-2xl p-4">
+    <div className="bg-zinc-900 rounded-2xl p-3.5">
       <p className="text-zinc-400 text-sm">{title}</p>
       <p className="font-bold">{value}</p>
     </div>
