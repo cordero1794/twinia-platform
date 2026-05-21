@@ -242,7 +242,7 @@ export default function Home() {
     </div>
 
     <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-      <div className="h-[620px] w-full rounded-2xl overflow-hidden border border-zinc-800">
+      <div className="h-[720px] w-full rounded-2xl overflow-hidden border border-zinc-800">
         <ModelViewer ia={ia} />
       </div>
     </div>
