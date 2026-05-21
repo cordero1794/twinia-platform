@@ -298,7 +298,14 @@ export default function Home() {
                 </p>
 
                 <div className="h-[605px] rounded-2xl overflow-hidden border border-zinc-800">
-                  <EnvironmentViewer escenario={escenario} />
+                  <EnvironmentViewer
+                    escenario={escenario}
+                    customEnvironmentUrl={
+                      escenario === "Ambiente personalizado"
+                        ? environmentPreview[0]?.url
+                        : undefined
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -363,18 +370,24 @@ export default function Home() {
                   ]}
                 />
 
-                <Selector
-                  label="Ambiente"
-                  value={escenario}
-                  setValue={setEscenario}
-                  options={[
-                    "Parque urbano",
-                    "Hospital",
-                    "Ciudad",
-                    "Universidad",
-                    "Ambiente personalizado",
-                  ]}
-                />
+                  <Selector
+                    label="Ambiente"
+                    value={escenario}
+                    setValue={(value) => {
+                      setEscenario(value);
+
+                      if (value !== "Ambiente personalizado") {
+                        setEnvironmentFiles([]);
+                      }
+                    }}
+                    options={[
+                      "Parque urbano",
+                      "Hospital",
+                      "Ciudad",
+                      "Universidad",
+                      "Ambiente personalizado",
+                    ]}
+                  />
 
                 <Selector
                   label="Robot"
@@ -525,11 +538,17 @@ export default function Home() {
 
               <PreviewGrid title="Archivos de robot" files={robotPreview} />
 
-              <UploadBox
-                title="Ambiente personalizado"
-                description=".usd .usdz .obj .fbx .gltf .glb"
-                onChange={setEnvironmentFiles}
-              />
+                <UploadBox
+                  title="Ambiente personalizado"
+                  description=".glb .gltf recomendado para vista previa 3D"
+                  onChange={(files) => {
+                    setEnvironmentFiles(files);
+
+                    if (files.length > 0) {
+                      setEscenario("Ambiente personalizado");
+                    }
+                  }}
+                />
 
               <PreviewGrid
                 title="Archivos de ambiente"
