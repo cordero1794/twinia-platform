@@ -365,7 +365,7 @@ const exportarConfigCosmos = () => {
 
     <div className="relative z-10">
 
-      <nav className="flex justify-between items-start mb-20">
+      <nav className="flex justify-between items-start mb-40">
 
         <div className="mt-60  ml-20">
           <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
