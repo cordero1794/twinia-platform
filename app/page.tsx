@@ -224,7 +224,7 @@ export default function Home() {
         Visualización 3D del escenario seleccionado.
       </p>
 
-      <div className="h-[620px] rounded-2xl overflow-hidden border border-zinc-800">
+      <div className="h-[600px] rounded-2xl overflow-hidden border border-zinc-800">
         <EnvironmentViewer escenario={escenario} />
       </div>
     </div>
@@ -242,7 +242,7 @@ export default function Home() {
     </div>
 
     <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-      <div className="h-[690px] w-full rounded-2xl overflow-hidden border border-zinc-800">
+      <div className="h-[680px] w-full rounded-2xl overflow-hidden border border-zinc-800">
         <ModelViewer ia={ia} />
       </div>
     </div>
