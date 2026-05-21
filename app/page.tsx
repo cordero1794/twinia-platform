@@ -50,6 +50,75 @@ export default function Home() {
   const [environmentFiles, setEnvironmentFiles] = useState<File[]>([]);
   const [datasetFiles, setDatasetFiles] = useState<File[]>([]);
 
+  const aplicarModoTrabajo = (modo: string) => {
+  setModoTrabajo(modo);
+
+  if (modo === "Solo simulación") {
+    setDatasetSize(100);
+    setTrainingEpochs(1);
+    setExpectedMap(0);
+    setExpectedPrecision(0);
+    setExpectedRecall(0);
+    setExpectedFps(30);
+    setSimToRealReduction(10);
+    setCosmosPrompt(
+      "Simulación básica del robot en un entorno virtual controlado para validar movimiento, sensores y comportamiento inicial."
+    );
+  }
+
+  if (modo === "Generar dataset sintético") {
+    setDatasetSize(3000);
+    setTrainingEpochs(1);
+    setExpectedMap(0);
+    setExpectedPrecision(0);
+    setExpectedRecall(0);
+    setExpectedFps(25);
+    setSimToRealReduction(35);
+    setCosmosPrompt(
+      "Generar escenas sintéticas variadas del robot en un parque urbano con iluminación cambiante, obstáculos, líneas podotáctiles y objetos relevantes."
+    );
+  }
+
+  if (modo === "Entrenar modelo IA") {
+    setDatasetSize(5000);
+    setTrainingEpochs(100);
+    setExpectedMap(85);
+    setExpectedPrecision(88);
+    setExpectedRecall(84);
+    setExpectedFps(20);
+    setSimToRealReduction(45);
+    setCosmosPrompt(
+      "Dataset sintético hiperrealista para entrenar un modelo de IA robusto en detección, navegación y reconocimiento del entorno."
+    );
+  }
+
+  if (modo === "Ejecutar inferencia") {
+    setDatasetSize(1000);
+    setTrainingEpochs(1);
+    setExpectedMap(80);
+    setExpectedPrecision(85);
+    setExpectedRecall(82);
+    setExpectedFps(35);
+    setSimToRealReduction(30);
+    setCosmosPrompt(
+      "Evaluar inferencia en tiempo real con cámara RGB/RGB-D para detectar objetos, líneas podotáctiles y obstáculos."
+    );
+  }
+
+  if (modo === "Validar Sim-to-Real") {
+    setDatasetSize(2000);
+    setTrainingEpochs(30);
+    setExpectedMap(82);
+    setExpectedPrecision(86);
+    setExpectedRecall(83);
+    setExpectedFps(25);
+    setSimToRealReduction(60);
+    setCosmosPrompt(
+      "Comparar resultados entre simulación, datos sintéticos y escenario real para medir reducción de brecha Sim-to-Real."
+    );
+  }
+};
+
   const robotPreview = useMemo(
     () =>
       robotFiles.map((file) => ({
@@ -224,7 +293,7 @@ export default function Home() {
         Visualización 3D del escenario seleccionado.
       </p>
 
-      <div className="h-[610px] rounded-2xl overflow-hidden border border-zinc-800">
+      <div className="h-[605px] rounded-2xl overflow-hidden border border-zinc-800">
         <EnvironmentViewer escenario={escenario} />
       </div>
     </div>
@@ -242,7 +311,7 @@ export default function Home() {
     </div>
 
     <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl h-full w-full">
-      <div className="h-[685px] w-full rounded-2xl overflow-hidden border border-zinc-800">
+      <div className="h-[680px] w-full rounded-2xl overflow-hidden border border-zinc-800">
         <ModelViewer ia={ia} />
       </div>
     </div>
@@ -306,20 +375,68 @@ export default function Home() {
                 />
               </div>
 
-              <Panel title="Flujo experimental">
-                <div className="grid md:grid-cols-2 gap-3">
-                  <Selector
-                    label="Modo de trabajo"
-                    value={modoTrabajo}
-                    setValue={setModoTrabajo}
-                    options={[
-                      "Solo simulación",
-                      "Generar dataset sintético",
-                      "Entrenar modelo IA",
-                      "Ejecutar inferencia",
-                      "Validar Sim-to-Real",
-                    ]}
-                  />
+<Panel title="Flujo experimental">
+
+  <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+
+    {[
+      "Solo simulación",
+      "Generar dataset sintético",
+      "Entrenar modelo IA",
+      "Ejecutar inferencia",
+      "Validar Sim-to-Real",
+    ].map((modo, index) => (
+
+      <button
+        key={modo}
+        type="button"
+        onClick={() => aplicarModoTrabajo(modo)}
+        className={`text-left rounded-2xl border p-4 transition hover:scale-[1.02] ${
+          modoTrabajo === modo
+            ? "border-[#76B900] bg-[#76B900]/15 text-white"
+            : "border-zinc-800 bg-zinc-950 text-zinc-400"
+        }`}
+      >
+
+        <p className="text-[#76B900] font-black text-sm mb-2">
+          Fase {index + 1}
+        </p>
+
+        <p className="font-bold text-sm leading-tight">
+          {modo}
+        </p>
+
+      </button>
+
+    ))}
+  </div>
+
+  <div className="mt-4 grid md:grid-cols-2 gap-3">
+
+    <Selector
+      label="Tipo de validación"
+      value={validationMode}
+      setValue={setValidationMode}
+      options={[
+        "Sim-to-Real",
+        "Real-to-Sim",
+        "Simulado",
+        "Real",
+        "Híbrido DSR",
+      ]}
+    />
+
+    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-4">
+      <p className="text-zinc-400 text-sm mb-1">
+        Estado del flujo
+      </p>
+
+      <p className="text-[#76B900] font-black">
+        {modoTrabajo}
+      </p>
+    </div>
+
+  </div>
 
                   <Selector
                     label="Tipo de validación"
