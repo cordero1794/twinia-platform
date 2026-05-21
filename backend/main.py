@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 import os
 import shutil
 import json
+from fastapi import Response
 load_dotenv()
 
 app = FastAPI(title="TWINIA Backend")
@@ -196,6 +197,105 @@ def get_experiment(experiment_id: str):
 
     return experiment
 
+@app.get("/export-usd/{experiment_id}")
+async def export_usd(experiment_id: str):
+    exp = experiments_collection.find_one(
+        {"experiment_id": experiment_id},
+        {"_id": 0}
+    )
+
+    if not exp:
+        raise HTTPException(status_code=404, detail="Experimento no encontrado")
+
+    cosmos_options = exp.get("cosmos_options", {})
+    cosmos_estimate = exp.get("cosmos_estimate", {})
+    dsr_distribution = exp.get("dsr_distribution", {})
+
+    usd_content = f'''#usda 1.0
+(
+    defaultPrim = "TWINIA_Experiment"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "TWINIA_Experiment"
+{{
+    customData = {{
+        string experiment_id = "{exp.get("experiment_id", "")}"
+        string created_at = "{exp.get("created_at", "")}"
+        string robot = "{exp.get("robot", "")}"
+        string ia_model = "{exp.get("ia", "")}"
+        string environment = "{exp.get("escenario", "")}"
+        string sensor = "{exp.get("sensor", "")}"
+        string validation_mode = "{exp.get("validation_mode", "")}"
+        string work_mode = "{exp.get("modo_trabajo", "")}"
+        string cosmos_prompt = "{exp.get("cosmos_prompt", "").replace('"', "'")}"
+
+        int dataset_size = {exp.get("dataset_size", 0)}
+        int training_epochs = {exp.get("training_epochs", 0)}
+        int expected_map = {exp.get("expected_map", 0)}
+        int expected_precision = {exp.get("expected_precision", 0)}
+        int expected_recall = {exp.get("expected_recall", 0)}
+        int expected_fps = {exp.get("expected_fps", 0)}
+        int sim_to_real_reduction = {exp.get("sim_to_real_reduction", 0)}
+
+        bool cosmos_lluvia = {str(cosmos_options.get("lluvia", False)).lower()}
+        bool cosmos_noche = {str(cosmos_options.get("noche", False)).lower()}
+        bool cosmos_peatones = {str(cosmos_options.get("peatones", False)).lower()}
+        bool cosmos_trafico = {str(cosmos_options.get("trafico", False)).lower()}
+        bool cosmos_niebla = {str(cosmos_options.get("niebla", False)).lower()}
+        bool cosmos_obstaculos = {str(cosmos_options.get("obstaculos", False)).lower()}
+
+        int cosmos_images = {cosmos_estimate.get("images", 0)}
+        int cosmos_videos = {cosmos_estimate.get("videos", 0)}
+        double cosmos_size_gb = {cosmos_estimate.get("sizeGB", 0)}
+        double cosmos_gpu_hours = {cosmos_estimate.get("gpuHours", 0)}
+
+        int dsr_isaac_sim = {dsr_distribution.get("isaac_sim", 70)}
+        int dsr_cosmos = {dsr_distribution.get("cosmos", 20)}
+        int dsr_real_data = {dsr_distribution.get("real_data", 10)}
+    }}
+
+    def Xform "Robot"
+    {{
+        customData = {{
+            string selected_robot = "{exp.get("robot", "")}"
+        }}
+    }}
+
+    def Xform "Environment"
+    {{
+        customData = {{
+            string selected_environment = "{exp.get("escenario", "")}"
+        }}
+    }}
+
+    def Xform "Synthetic_Data"
+    {{
+        customData = {{
+            string generator = "NVIDIA Cosmos"
+            string prompt = "{exp.get("cosmos_prompt", "").replace('"', "'")}"
+        }}
+    }}
+
+    def Xform "AI_Model"
+    {{
+        customData = {{
+            string model = "{exp.get("ia", "")}"
+            string sensor = "{exp.get("sensor", "")}"
+        }}
+    }}
+}}
+'''
+
+    return Response(
+        content=usd_content,
+        media_type="application/octet-stream",
+        headers={
+            "Content-Disposition": f"attachment; filename=twinia_experiment_{experiment_id}.usda"
+        },
+    )
+
 
 @app.get("/report/{experiment_id}", response_class=HTMLResponse)
 def generate_report(experiment_id: str):
@@ -380,6 +480,22 @@ def generate_report(experiment_id: str):
                     Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos
                 </p>
                 <button onclick="window.print()">Descargar / Imprimir PDF</button>
+                <a
+                    href="/export-usd/{experiment_id}"
+                    target="_blank"
+                    style="
+                        margin-left:12px;
+                        background:#76B900;
+                        color:black;
+                        padding:12px 22px;
+                        border-radius:12px;
+                        text-decoration:none;
+                        font-weight:bold;
+                        display:inline-block;
+                    "
+                >
+                    Descargar USD Omniverse
+                </a>
             </div>
 
             <div class="card">
