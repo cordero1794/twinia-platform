@@ -427,21 +427,26 @@ const exportarConfigCosmos = () => {
           </nav>
 
           <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start mb-10">
-            <div className="space-y-6">
-              <div className="flex justify-center">
+              <div className="space-y-6">
+
+                <div className="flex justify-center">
                   <p className="text-[#76B900] font-bold mb-4 text-center">
                     PLATAFORMA DOCTORAL DE IA FÍSICA
                   </p>
                 </div>
+
                 <div className="flex justify-center">
                   <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6 text-center">
-                    Generador Personalizado De Entrenamiento Robótico.
+                    Generador Personalizado de Entrenamiento Robótico.
                   </h2>
                 </div>
+
                 <p className="text-zinc-300 text-lg leading-relaxed mb-8">
                   Cree pipelines personalizados para robots autónomos, gemelos
                   digitales, entrenamiento IA y generación de datos sintéticos.
                 </p>
+
+              </div>
 
                 <button
                   type="button"
