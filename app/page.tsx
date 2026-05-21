@@ -395,7 +395,7 @@ const exportarConfigCosmos = () => {
   <div className="rounded-2xl overflow-hidden border border-zinc-800 mb-4">
     <iframe
       className="w-full h-[320px]"
-      src="https://www.youtube.com/embed/aqz-KE-bpKQ"
+      src="https://www.youtube.com/embed/NAVzjKNa6ro?si=ARU06yt4PgDykX67" 
       title="Omniverse"
       allowFullScreen
     />
