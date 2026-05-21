@@ -486,11 +486,11 @@ def generate_report(experiment_id: str):
                 <p class="subtitle">
                     Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos
                 </p>
-                <a href="/usd/${experiment_id}" target="_blank" class="btn">
-    Descargar USD Omniverse
+             <a href="javascript:window.print()" class="btn">
+    Descargar / Imprimir PDF
 </a>
                 
-<a href="/usd/${experiment_id}" target="_blank" class="btn">
+<a href="/export-usd/{experiment_id}" target="_blank" class="btn">
     Descargar USD Omniverse
 </a>
             </div>
