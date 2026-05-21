@@ -243,7 +243,7 @@ export default function Home() {
             </div>
           </div>
 
-           <div className="grid lg:grid-cols-[1.25fr_1.55fr] gap-4 items-start max-w-5xl mx-auto">
+           <div className="grid lg:grid-cols-[2fr_2fr] gap-4 items-start max-w-5xl mx-auto">
             <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-2.5 -mt-300">
               <h3 className="text-xl font-black mb-1">
                 Configuración experimental
