@@ -249,8 +249,8 @@ export default function Home() {
   </div>
 </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-[0.95fr_0.75fr] gap-6 items-start w-full max-w-7xl mx-auto mt-8">
-            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-4 w-full">
+          <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-6 items-stretch w-full max-w-[1600px] mx-auto mt-2">
+            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-4 w-full h-full">
               <h3 className="text-[32px] font-black leading-none mb-2">
                 Configuración experimental
               </h3>
@@ -455,8 +455,8 @@ export default function Home() {
               </Panel>
             </div>
 
-            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-5 w-full max-w-[520px] xl:justify-self-end">
-              <h3 className="text-3xl font-black mb-5">Resumen</h3>
+            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-5 w-full h-full xl:justify-self-stretch">
+              <h3 className="text-3xl font-black mb-5 -mt-1">Resumen</h3>
 
               <div className="space-y-3">
                 <Info label="Robot" value={robot} />
