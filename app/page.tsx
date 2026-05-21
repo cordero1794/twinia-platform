@@ -374,9 +374,53 @@ const exportarConfigCosmos = () => {
               </p>
             </div>
 
-            <button className="border border-[#76B900] text-[#76B900] px-5 py-2 rounded-full">
-              Research Preview
-            </button>
+<div className="w-[420px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
+  
+  <div className="flex items-center justify-between mb-4">
+    <div>
+      <h3 className="text-xl font-black">
+        Tutorías IA
+      </h3>
+
+      <p className="text-zinc-400 text-xs">
+        Omniverse · Isaac Sim · Cosmos
+      </p>
+    </div>
+
+    <div className="bg-[#76B900] text-black px-3 py-1 rounded-full font-bold text-xs">
+      LIVE
+    </div>
+  </div>
+
+  <div className="rounded-2xl overflow-hidden border border-zinc-800 mb-4">
+    <iframe
+      className="w-full aspect-video"
+      src="https://www.youtube.com/embed/dJr2jUQ0M0w"
+      title="Omniverse"
+      allowFullScreen
+    />
+  </div>
+
+  <div className="grid grid-cols-2 gap-2">
+
+    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
+      Isaac Sim
+    </button>
+
+    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
+      YOLO
+    </button>
+
+    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
+      Cosmos
+    </button>
+
+    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
+      ROS2
+    </button>
+
+  </div>
+</div>
           </nav>
 
           <div className="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start mb-10">
