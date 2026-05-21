@@ -441,6 +441,7 @@ def generate_report(experiment_id: str):
                 margin-right: 20px;
                 width: 260px;
                 text-align: center;
+                box-sizing: border-box;
             }}
 
             .footer {{
@@ -486,12 +487,7 @@ def generate_report(experiment_id: str):
                     Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos
                 </p>
                 <button onclick="window.print()">Descargar / Imprimir PDF</button>
-<a
-    href="/export-usd/{experiment_id}"
-    target="_blank"
-    class="btn"
-    style="text-decoration:none;"
->
+<a href="/usd/${experiment_id}" target="_blank" class="btn">
     Descargar USD Omniverse
 </a>
             </div>
