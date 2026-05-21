@@ -20,7 +20,7 @@ const environmentModels: Record<string, string> = {
 };
 
 const environmentScale: Record<string, number> = {
-  "Parque urbano": 1,
+  "Parque urbano": 6,
   Universidad: 1,
 };
 
@@ -57,7 +57,7 @@ export default function EnvironmentViewer({
       <Canvas
         shadows
         camera={{
-          position: [12, 8, 12],
+          position: [6, 4, 6],
           fov: 45,
         }}
       >
