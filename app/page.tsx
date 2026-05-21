@@ -243,17 +243,17 @@ export default function Home() {
             </div>
           </div>
 
-           <div className="grid lg:grid-cols-[0.8fr_1.15fr] gap-1 items-start max-w-7xl ml-[-90px]">
-            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2.2rem] p-2.5 -mt-290">
-              <h3 className="text-xl font-black mb-1">
+          <div className="grid lg:grid-cols-[0.78fr_1.08fr] gap-3 items-start max-w-[1700px] ml-[-70px] mt-[-420px]">
+            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[1.7rem] p-3 max-w-[620px]">
+              <h3 className="text-[34px] font-black mb-1 leading-none">
                 Configuración experimental
               </h3>
 
-              <p className="text-zinc-400 mb-3 text-sm">
+              <p className="text-zinc-400 mb-4 text-sm">
                 Personalice el pipeline robótico.
               </p>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-3">
                 <Selector
                   label="Robot"
                   value={robot}
@@ -301,7 +301,7 @@ export default function Home() {
               </div>
 
               <Panel title="Flujo experimental">
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-3">
                   <Selector
                     label="Modo de trabajo"
                     value={modoTrabajo}
@@ -423,15 +423,15 @@ export default function Home() {
               <PreviewGrid title="Archivos dataset" files={datasetPreview} />
 
               <Panel title="NVIDIA Cosmos">
-                <div className="flex items-center justify-between gap-5 mb-5">
-                  <p className="text-zinc-400">
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <p className="text-zinc-400 text-sm">
                     Prompt para generación de video sintético.
                   </p>
 
                   <button
                     type="button"
                     onClick={() => setCosmos(!cosmos)}
-                    className={`px-6 py-3 rounded-full font-bold transition ${
+                    className={`px-5 py-2 rounded-full font-bold transition ${
                       cosmos
                         ? "bg-[#76B900] text-black"
                         : "bg-zinc-800 text-zinc-300"
@@ -444,13 +444,13 @@ export default function Home() {
                 <textarea
                   value={cosmosPrompt}
                   onChange={(e) => setCosmosPrompt(e.target.value)}
-                  className="w-full min-h-32 bg-zinc-900 border border-zinc-700 rounded-2xl p-4 outline-none focus:border-[#76B900]"
+                  className="w-full min-h-28 bg-zinc-900 border border-zinc-700 rounded-2xl p-3 outline-none focus:border-[#76B900]"
                 />
               </Panel>
             </div>
 
-            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-6">
-              <h3 className="text-2xl font-black mb-5">Resumen</h3>
+            <div className="bg-zinc-950/90 border border-zinc-800 rounded-[2rem] p-5 mt-[110px]">
+              <h3 className="text-4xl font-black mb-5">Resumen</h3>
 
               <div className="space-y-3">
                 <Info label="Robot" value={robot} />
@@ -560,12 +560,14 @@ function Selector({
 }) {
   return (
     <div>
-      <label className="block text-zinc-300 mb-2 font-semibold">{label}</label>
+      <label className="block text-zinc-300 mb-1 font-semibold text-sm">
+        {label}
+      </label>
 
       <select
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-3.5 outline-none focus:border-[#76B900]"
+        className="w-full bg-zinc-900 border border-zinc-700 rounded-xl p-2.5 text-sm outline-none focus:border-[#76B900]"
       >
         {options.map((option) => (
           <option key={option}>{option}</option>
@@ -591,10 +593,10 @@ function ControlSlider({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className="mt-5">
-      <div className="flex justify-between mb-2">
-        <label className="text-zinc-300 font-semibold">{label}</label>
-        <span className="text-[#76B900] font-bold">{value}</span>
+    <div className="mt-4">
+      <div className="flex justify-between mb-1">
+        <label className="text-zinc-300 font-semibold text-sm">{label}</label>
+        <span className="text-[#76B900] font-bold text-sm">{value}</span>
       </div>
 
       <input
@@ -618,8 +620,8 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mt-6 bg-black border border-zinc-800 rounded-3xl p-5">
-      <h4 className="text-lg font-bold mb-4">{title}</h4>
+    <div className="mt-4 bg-black border border-zinc-800 rounded-2xl p-3">
+      <h4 className="text-base font-bold mb-3">{title}</h4>
       {children}
     </div>
   );
@@ -635,16 +637,16 @@ function UploadBox({
   onChange: (files: File[]) => void;
 }) {
   return (
-    <div className="mt-6 bg-black border border-zinc-800 rounded-3xl p-5">
-      <h4 className="text-lg font-bold mb-2">{title}</h4>
+    <div className="mt-4 bg-black border border-zinc-800 rounded-2xl p-3">
+      <h4 className="text-base font-bold mb-2">{title}</h4>
 
-      <p className="text-zinc-400 mb-4 text-sm">{description}</p>
+      <p className="text-zinc-400 mb-3 text-sm">{description}</p>
 
       <input
         type="file"
         multiple
         onChange={(e) => onChange(Array.from(e.target.files || []))}
-        className="block w-full text-sm text-zinc-300 file:mr-4 file:rounded-xl file:border-0 file:bg-[#76B900] file:px-4 file:py-3 file:font-bold file:text-black"
+        className="block w-full text-sm text-zinc-300 file:mr-3 file:rounded-xl file:border-0 file:bg-[#76B900] file:px-3 file:py-2 file:font-bold file:text-black"
       />
     </div>
   );
@@ -662,10 +664,10 @@ function PreviewGrid({
   }[];
 }) {
   return (
-    <div className="mt-5">
-      <h4 className="text-lg font-bold mb-3">{title}</h4>
+    <div className="mt-4">
+      <h4 className="text-base font-bold mb-2">{title}</h4>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-3">
         {files.length === 0 && (
           <div className="text-zinc-500 text-sm">No hay archivos cargados.</div>
         )}
@@ -673,19 +675,19 @@ function PreviewGrid({
         {files.map((file, index) => (
           <div
             key={index}
-            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4"
+            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-3"
           >
             {file.type.startsWith("image") && (
               <img
                 src={file.url}
                 alt={file.name}
-                className="h-32 w-full object-cover rounded-xl mb-3"
+                className="h-28 w-full object-cover rounded-xl mb-2"
               />
             )}
 
-            <p className="font-bold break-all">{file.name}</p>
+            <p className="font-bold break-all text-sm">{file.name}</p>
 
-            <p className="text-zinc-400 text-sm">{file.type || "Archivo"}</p>
+            <p className="text-zinc-400 text-xs">{file.type || "Archivo"}</p>
           </div>
         ))}
       </div>
