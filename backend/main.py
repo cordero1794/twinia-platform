@@ -426,7 +426,7 @@ def generate_report(experiment_id: str):
                 margin-bottom: 8px;
             }}
 
-            button,
+            
             .btn {{
                 background: #76B900;
                 color: #000000;
@@ -486,7 +486,10 @@ def generate_report(experiment_id: str):
                 <p class="subtitle">
                     Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos
                 </p>
-                <button onclick="window.print()">Descargar / Imprimir PDF</button>
+                <a href="/usd/${experiment_id}" target="_blank" class="btn">
+    Descargar USD Omniverse
+</a>
+                
 <a href="/usd/${experiment_id}" target="_blank" class="btn">
     Descargar USD Omniverse
 </a>
