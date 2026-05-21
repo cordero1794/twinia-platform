@@ -369,7 +369,7 @@ const exportarConfigCosmos = () => {
 
         <div className="mt-60 ml-35">
           <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
-            TWINIA<span className="text-[#76B900]">.</span>AI
+            TWINIA<span className="text-[#76B900]">.</span>IA
           </h1>
 
           <p className="text-lg text-zinc-300 mt-3">
@@ -432,11 +432,11 @@ const exportarConfigCosmos = () => {
                 <p className="text-[#76B900] font-bold mb-4">
                   PLATAFORMA DOCTORAL DE IA FÍSICA
                 </p>
-
-                <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6">
-                  Generador Personalizado de Entrenamiento Robótico.
-                </h2>
-
+                <div className="flex justify-center">
+                  <h2 className="text-5xl md:text-7xl font-black leading-tight mb-6 text-center">
+                    Generador Personalizado de Entrenamiento Robótico.
+                  </h2>
+                </div>
                 <p className="text-zinc-300 text-lg leading-relaxed mb-8">
                   Cree pipelines personalizados para robots autónomos, gemelos
                   digitales, entrenamiento IA y generación de datos sintéticos.
