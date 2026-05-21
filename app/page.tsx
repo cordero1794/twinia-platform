@@ -306,8 +306,10 @@ export default function Home() {
             <div className="space-y-5">
               <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-5 shadow-2xl">
                 <RobotViewer
-                  robot={robot}
-                  customModelUrl={robotPreview[0]?.url}
+                    robot={robot}
+                    customModelUrl={
+                      robot === "Robot personalizado" ? robotPreview[0]?.url : undefined
+                    }
                   />
 
                 <div className="grid grid-cols-3 gap-3 mt-4">
@@ -375,10 +377,21 @@ export default function Home() {
                 />
 
                 <Selector
-                  label="Sensor"
-                  value={sensor}
-                  setValue={setSensor}
-                  options={["RGB", "RGB-D", "LiDAR", "Ultrasonido"]}
+                  label="Robot"
+                  value={robot}
+                  setValue={(value) => {
+                    setRobot(value);
+
+                    if (value !== "Robot personalizado") {
+                      setRobotFiles([]);
+                    }
+                  }}
+                  options={[
+                    "TWINIA",
+                    "BRAZO",
+                    "HUMANOIDE",
+                    "Robot personalizado",
+                  ]}
                 />
               </div>
 
