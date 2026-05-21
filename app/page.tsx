@@ -7,6 +7,17 @@ const RobotViewer = dynamic(() => import("../components/RobotViewer"), {
   ssr: false,
 });
 
+const ModelViewer = dynamic(() => import("../components/ModelViewer"), {
+  ssr: false,
+});
+
+const EnvironmentViewer = dynamic(
+  () => import("../components/EnvironmentViewer"),
+  {
+    ssr: false,
+  }
+);
+
 const BACKEND_URL = "https://twinia-backend.onrender.com";
 
 export default function Home() {
@@ -92,17 +103,11 @@ export default function Home() {
       formData.append("expected_fps", String(expectedFps));
       formData.append("sim_to_real_reduction", String(simToRealReduction));
 
-      robotFiles.forEach((file) => {
-        formData.append("robot_files", file);
-      });
-
-      environmentFiles.forEach((file) => {
-        formData.append("environment_files", file);
-      });
-
-      datasetFiles.forEach((file) => {
-        formData.append("dataset_files", file);
-      });
+      robotFiles.forEach((file) => formData.append("robot_files", file));
+      environmentFiles.forEach((file) =>
+        formData.append("environment_files", file)
+      );
+      datasetFiles.forEach((file) => formData.append("dataset_files", file));
 
       const response = await fetch(`${BACKEND_URL}/create-experiment`, {
         method: "POST",
@@ -173,7 +178,7 @@ export default function Home() {
             </button>
           </nav>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+          <div className="grid lg:grid-cols-2 gap-12 items-start mb-16">
             <div>
               <p className="text-[#76B900] font-bold mb-4">
                 PLATAFORMA DOCTORAL DE IA FÍSICA
@@ -209,13 +214,31 @@ export default function Home() {
               )}
             </div>
 
-            <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl">
-              <RobotViewer />
+            <div className="space-y-6">
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl">
+                <RobotViewer robot={robot} />
 
-              <div className="grid grid-cols-3 gap-3 mt-5">
-                <Badge title="Sim" value="Isaac Sim" />
-                <Badge title="Data" value="Cosmos" />
-                <Badge title="Backend" value="FastAPI" />
+                <div className="grid grid-cols-3 gap-3 mt-5">
+                  <Badge title="Sim" value="Isaac Sim" />
+                  <Badge title="Data" value="Cosmos" />
+                  <Badge title="Backend" value="FastAPI" />
+                </div>
+              </div>
+
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl">
+                <h3 className="text-2xl font-black mb-4">
+                  Vista previa del ambiente
+                </h3>
+
+                <p className="text-zinc-400 mb-5">
+                  Visualización 3D del escenario seleccionado.
+                </p>
+
+                <EnvironmentViewer escenario={escenario} />
+              </div>
+
+              <div className="bg-zinc-950/80 border border-zinc-800 rounded-[2rem] p-6 shadow-2xl">
+                <ModelViewer ia={ia} />
               </div>
             </div>
           </div>
@@ -235,7 +258,12 @@ export default function Home() {
                   label="Robot"
                   value={robot}
                   setValue={setRobot}
-                  options={["TWINIA", "Spot", "Unitree", "Robot personalizado"]}
+                  options={[
+                    "TWINIA",
+                    "BRAZO",
+                    "HUMANOIDE",
+                    "Robot personalizado",
+                  ]}
                 />
 
                 <Selector
@@ -447,10 +475,7 @@ export default function Home() {
                   label="Archivos ambiente"
                   value={`${environmentFiles.length}`}
                 />
-                <Info
-                  label="Archivos dataset"
-                  value={`${datasetFiles.length}`}
-                />
+                <Info label="Archivos dataset" value={`${datasetFiles.length}`} />
               </div>
 
               <button

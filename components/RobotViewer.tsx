@@ -1,5 +1,6 @@
 "use client";
 
+import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -9,91 +10,164 @@ import {
   Bounds,
   Center,
 } from "@react-three/drei";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils.js";
 
-function RobotModel() {
-  const model = useGLTF("/twinia.glb");
+type RobotViewerProps = {
+  robot: string;
+};
+
+const robotModels: Record<string, string> = {
+  TWINIA: "/twinia.glb",
+  BRAZO: "/BRAZO_opt.glb",
+  HUMANOIDE: "/HUMANOIDE_opt.glb",
+  "Robot personalizado": "/twinia.glb",
+};
+
+const robotScale: Record<string, number> = {
+  TWINIA: 0.10,
+  BRAZO: 0.85,
+  HUMANOIDE: 1.05,
+  "Robot personalizado": 0.24,
+};
+
+const robotRotation: Record<string, [number, number, number]> = {
+  TWINIA: [0, Math.PI / 2, 0],
+  BRAZO: [0, -Math.PI / 5, 0],
+  HUMANOIDE: [0, Math.PI, 0],
+  "Robot personalizado": [0, Math.PI / 2, 0],
+};
+
+const robotPosition: Record<string, [number, number, number]> = {
+  TWINIA: [0, 0.7, 0],
+  BRAZO: [0, 0, 0],
+  HUMANOIDE: [0, 0, 0],
+  "Robot personalizado": [0, 0.7, 0],
+};
+
+const robotGridY: Record<string, number> = {
+  TWINIA: -1.15,
+  BRAZO: -0.2,
+  HUMANOIDE: -0.3,
+  "Robot personalizado": -1.15,
+};
+
+const robotColors: Record<string, string | null> = {
+  TWINIA: null,
+  BRAZO: "#3b82f6",
+  HUMANOIDE: "#ffffff",
+  "Robot personalizado": null,
+};
+
+function RobotModel({ robot }: { robot: string }) {
+  const modelPath = robotModels[robot] || "/twinia.glb";
+
+  const model = useGLTF(modelPath);
+
+  const clonedScene = clone(model.scene);
+
+  clonedScene.traverse((child) => {
+    if ((child as THREE.Mesh).isMesh) {
+      const mesh = child as THREE.Mesh;
+
+      if (robotColors[robot]) {
+        mesh.material = new THREE.MeshStandardMaterial({
+          color: robotColors[robot]!,
+          metalness: 0.45,
+          roughness: 0.38,
+          emissive: new THREE.Color(robotColors[robot]!),
+          emissiveIntensity: 0.03,
+        });
+      }
+
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+    }
+  });
 
   return (
-    <Bounds fit clip observe margin={1.1}>
+    <Bounds fit clip observe margin={1.25}>
       <Center>
         <primitive
-          object={model.scene}
-          scale={0.24}
-          position={[0, -280, 0]}
-          rotation={[0, Math.PI / 2, 0]}
+          object={clonedScene}
+          scale={robotScale[robot] || 1}
+          position={robotPosition[robot] || [0, 0, 0]}
+          rotation={robotRotation[robot] || [0, 0, 0]}
         />
       </Center>
     </Bounds>
   );
 }
 
-export default function RobotViewer() {
+export default function RobotViewer({ robot }: RobotViewerProps) {
   return (
     <div className="h-[550px] w-full rounded-3xl overflow-hidden border border-zinc-800 bg-black">
-
       <Canvas
         shadows
         camera={{
-          position: [4, 2, 7],
-          fov: 42,
+          position: [5.5, 3.2, 7.5],
+          fov: 38,
+          near: 0.1,
+          far: 100,
         }}
       >
         <color attach="background" args={["#050505"]} />
 
-        <fog attach="fog" args={["#050505", 12, 30]} />
+        <ambientLight intensity={0.85} />
 
-        {/* Luz ambiente suave */}
-        <ambientLight intensity={0.8} />
-
-        {/* Luz principal blanca */}
         <directionalLight
           castShadow
-          position={[5, 8, 5]}
-          intensity={1.5}
+          position={[4, 7, 6]}
+          intensity={1.4}
           color="#ffffff"
         />
 
-        {/* Luz verde NVIDIA suave */}
         <spotLight
-          position={[-5, 6, 5]}
-          intensity={1}
+          position={[-5, 5, 5]}
+          intensity={0.65}
+          angle={0.35}
+          penumbra={0.6}
           color="#76B900"
         />
 
-        {/* Luz azul cinematográfica */}
         <pointLight
-          position={[0, 4, -4]}
-          intensity={0.5}
+          position={[0, 3, -4]}
+          intensity={0.45}
           color="#3b82f6"
         />
 
-        {/* Piso/grid */}
         <Grid
-          position={[0, -2.5, 0]}
-          args={[30, 30]}
-          cellColor="#222222"
+          key={`grid-${robot}`}
+          position={[0, robotGridY[robot] ?? -1.15, 0]}
+          args={[24, 24]}
+          cellColor="#1f1f1f"
           sectionColor="#76B900"
-          fadeDistance={40}
-          fadeStrength={1}
+          fadeDistance={28}
+          fadeStrength={1.2}
         />
 
-        <RobotModel />
+        <RobotModel robot={robot} />
 
-        <Environment preset="warehouse" />
+        <Environment
+          preset="warehouse"
+          environmentIntensity={0.45}
+        />
 
         <OrbitControls
           makeDefault
-          enablePan
+          target={[0, 0.15, 0]}
+          enablePan={false}
           enableZoom
           enableRotate
-          minDistance={2}
-          maxDistance={12}
+          minDistance={2.5}
+          maxDistance={18}
+          minPolarAngle={Math.PI / 5}
+          maxPolarAngle={Math.PI / 2.15}
         />
-
       </Canvas>
-
     </div>
   );
 }
 
 useGLTF.preload("/twinia.glb");
+useGLTF.preload("/BRAZO_opt.glb");
+useGLTF.preload("/HUMANOIDE_opt.glb");
