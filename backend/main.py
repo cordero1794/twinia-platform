@@ -8,7 +8,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import os
 import shutil
-
+import json
 load_dotenv()
 
 app = FastAPI(title="TWINIA Backend")
@@ -71,6 +71,9 @@ async def create_experiment(
     robot_files: list[UploadFile] = File([]),
     environment_files: list[UploadFile] = File([]),
     dataset_files: list[UploadFile] = File([]),
+    cosmos_options: str = Form("{}"),
+    cosmos_estimate: str = Form("{}"),
+    dsr_distribution: str = Form("{}"),
 ):
     experiment_id = str(uuid.uuid4())[:8]
 
@@ -154,6 +157,9 @@ async def create_experiment(
         "robot_files": saved_robot_files,
         "environment_files": saved_environment_files,
         "dataset_files": saved_dataset_files,
+        "cosmos_options": json.loads(cosmos_options),
+        "cosmos_estimate": json.loads(cosmos_estimate),
+        "dsr_distribution": json.loads(dsr_distribution),
     }
 
     experiments_collection.insert_one(experiment.copy())

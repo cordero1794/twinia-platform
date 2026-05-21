@@ -203,6 +203,14 @@ export default function Home() {
       formData.append("expected_fps", String(expectedFps));
       formData.append("sim_to_real_reduction", String(simToRealReduction));
 
+      formData.append("cosmos_options", JSON.stringify(cosmosOptions));
+      formData.append("cosmos_estimate", JSON.stringify(cosmosEstimate));
+      formData.append("dsr_distribution", JSON.stringify({
+        isaac_sim: 70,
+        cosmos: 20,
+        real_data: 10,
+      }));
+
       robotFiles.forEach((file) => formData.append("robot_files", file));
 
       environmentFiles.forEach((file) =>
@@ -922,13 +930,15 @@ const exportarConfigCosmos = () => {
     </div>
   </div>
 
-  <button
-    type="button"
-    onClick={exportarConfigCosmos}
-    className="w-full mt-4 bg-[#76B900] text-black p-4 rounded-2xl font-black hover:scale-[1.01] transition"
-  >
-    Exportar configuración Cosmos
-  </button>
+    <div className="mt-4 bg-[#76B900]/10 border border-[#76B900]/40 rounded-2xl p-4">
+      <p className="text-[#76B900] font-black">
+        Configuración Cosmos lista para guardar
+      </p>
+
+      <p className="text-zinc-400 text-sm mt-1">
+        Esta información se guardará automáticamente al crear el experimento FastAPI.
+      </p>
+    </div>
 </Panel>
             </div>
 
