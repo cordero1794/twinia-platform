@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-
+import { useState } from "react";
 const RobotViewer = dynamic(() => import("../components/RobotViewer"), {
   ssr: false,
 });
@@ -355,7 +355,9 @@ const exportarConfigCosmos = () => {
   URL.revokeObjectURL(url);
 };
 
-
+const [videoUrl, setVideoUrl] = useState(
+  "https://www.youtube.com/embed/NAVzjKNa6ro"
+);
 
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden">
@@ -395,34 +397,61 @@ const exportarConfigCosmos = () => {
     </div>
   </div>
 
-  <div className="rounded-2xl overflow-hidden border border-zinc-800 mb-4">
-    <iframe
-      className="w-full h-[320px]"
-      src="https://www.youtube.com/embed/NAVzjKNa6ro?si=ARU06yt4PgDykX67" 
-      title="Omniverse"
-      allowFullScreen
-    />
-  </div>
+<div className="rounded-2xl overflow-hidden border border-zinc-800 mb-4">
+  <iframe
+    className="w-full h-[320px]"
+    src={videoUrl}
+    title="Omniverse"
+    allowFullScreen
+  />
+</div>
 
-  <div className="grid grid-cols-2 gap-2">
+<div className="grid grid-cols-2 gap-2">
 
-    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
-      Isaac Sim
-    </button>
+  <button
+    onClick={() =>
+      setVideoUrl(
+        "https://www.youtube.com/embed/NAVzjKNa6ro"
+      )
+    }
+    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
+  >
+    Isaac Sim
+  </button>
 
-    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
-      Twinia.AI
-    </button>
+  <button
+    onClick={() =>
+      setVideoUrl(
+        "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      )
+    }
+    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
+  >
+    Twinia.AI
+  </button>
 
-    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
-      Cosmos
-    </button>
+  <button
+    onClick={() =>
+      setVideoUrl(
+        "https://www.youtube.com/embed/aqz-KE-bpKQ"
+      )
+    }
+    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
+  >
+    Cosmos
+  </button>
 
-    <button className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition">
-      Datos Sinteticos
-    </button>
+  <button
+    onClick={() =>
+      setVideoUrl(
+        "https://www.youtube.com/embed/ysz5S6PUM-U"
+      )
+    }
+    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
+  >
+    Datos Sintéticos
+  </button>
 
-  </div>
 </div>
           </nav>
 
