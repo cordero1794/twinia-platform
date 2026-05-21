@@ -367,7 +367,7 @@ const exportarConfigCosmos = () => {
 
       <nav className="flex justify-between items-start mb-20">
 
-        <div className="mt-60 ml-40">
+        <div className="mt-60 ml-35">
           <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
             TWINIA<span className="text-[#76B900]">.</span>AI
           </h1>
