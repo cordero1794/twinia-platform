@@ -438,7 +438,7 @@ def generate_report(experiment_id: str):
                 margin-top: 20px;
                 text-decoration: none;
                 display: inline-block;
-                margin-right: 12px;
+                margin-right: 30px;
             }}
 
             .footer {{
