@@ -28,7 +28,7 @@ export default function Home() {
   const [cosmos, setCosmos] = useState(true);
 
   const [videoUrl, setVideoUrl] = useState(
-    "https://www.youtube.com/embed/NAVzjKNa6ro"
+    "https://www.youtube.com/embed/Y0B-k5nO6Uw?si=yp1DvqlR8-jKcvIR"
   );
 
   const [modoTrabajo, setModoTrabajo] = useState("Generar dataset sintético");
