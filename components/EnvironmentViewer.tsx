@@ -18,7 +18,7 @@ type EnvironmentViewerProps = {
 const environmentModels: Record<string, string> = {
   "Parque urbano": "/ambientes/Mapa+Bucaramanga.glb",
   Universidad: "/ambientes/UNAB+1.glb",
-  Hospital: "/ambientes/CLARENCE.glb",
+  Hospital: "/ambientes/quattro+palazzi.glb",
   Ciudad:"/ambientes/romel+fernandez.glb",
 };
 
@@ -110,7 +110,7 @@ export default function EnvironmentViewer({
 
 useGLTF.preload("/ambientes/Mapa+Bucaramanga.glb");
 useGLTF.preload("/ambientes/UNAB+1.glb");
-useGLTF.preload("/ambientes/CLARENCE.glb");
+useGLTF.preload("/ambientes/quattro+palazzi.glb");
 useGLTF.preload("/ambientes/romel+fernandez.glb");
 
  
