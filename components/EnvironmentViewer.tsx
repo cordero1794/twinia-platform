@@ -108,5 +108,9 @@ export default function EnvironmentViewer({
   );
 }
 
-useGLTF.preload("/ambientes/garciame_opt.glb");
+useGLTF.preload("/ambientes/Mapa+Bucaramanga.glb");
 useGLTF.preload("/ambientes/UNAB+1.glb");
+useGLTF.preload("/ambientes/CLARENCE.glb");
+useGLTF.preload("/ambientes/cuidad.glb");
+
+ 
