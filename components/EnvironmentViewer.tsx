@@ -16,13 +16,18 @@ type EnvironmentViewerProps = {
 };
 
 const environmentModels: Record<string, string> = {
-  "Parque urbano": "/ambientes/garciame_opt.glb",
+  "Parque urbano": "/ambientes/Mapa+Bucaramanga.glb",
   Universidad: "/ambientes/UNAB+1.glb",
+  Hospital: "/ambientes/CLARENCE.glb",
+  Ciudad:"/ambientes/cuidad.glb",
 };
 
 const environmentScale: Record<string, number> = {
   "Parque urbano": 6,
   Universidad: 1,
+  Hospital: 1,
+  Ciudad:1,
+                    
 };
 
 function EnvironmentModel({
