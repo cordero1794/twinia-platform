@@ -415,7 +415,7 @@ export default function Home() {
                                 <button
                   type="button"
                   onClick={() =>
-                    setVideoUrl("https://www.youtube.com/embed/dQw4w9WgXcQ")
+                    setVideoUrl("https://www.youtube.com/embed/VW-dOMBFj7o?si=wCOEyKaL0OfQu7dT")
                   }
                   className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
                 >
@@ -425,7 +425,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() =>
-                    setVideoUrl("https://www.youtube.com/embed/aqz-KE-bpKQ")
+                    setVideoUrl("https://www.youtube.com/embed/9Uch931cDx8?si=mZPtsoN-JPvqlfUU")
                   }
                   className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
                 >
@@ -435,7 +435,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() =>
-                    setVideoUrl("https://www.youtube.com/embed/ysz5S6PUM-U")
+                    setVideoUrl("https://www.youtube.com/embed/gPaFgNEF82Q?si=P9Kz1nov9mHY5Jkl")
                   }
                   className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
                 >
