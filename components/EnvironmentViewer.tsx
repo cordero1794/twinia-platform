@@ -19,11 +19,11 @@ const environmentModels: Record<string, string> = {
   "Parque urbano": "/ambientes/Mapa+Bucaramanga.glb",
   Universidad: "/ambientes/UNAB+1.glb",
   Hospital: "/ambientes/CLARENCE.glb",
-  Ciudad:"/ambientes/cuidad.glb",
+  Ciudad:"/ambientes/romel+fernandez.glb",
 };
 
 const environmentScale: Record<string, number> = {
-  "Parque urbano": 6,
+  "Parque urbano": 1,
   Universidad: 1,
   Hospital: 1,
   Ciudad:1,
@@ -111,6 +111,6 @@ export default function EnvironmentViewer({
 useGLTF.preload("/ambientes/Mapa+Bucaramanga.glb");
 useGLTF.preload("/ambientes/UNAB+1.glb");
 useGLTF.preload("/ambientes/CLARENCE.glb");
-useGLTF.preload("/ambientes/cuidad.glb");
+useGLTF.preload("/ambientes/romel+fernandez.glb");
 
  
