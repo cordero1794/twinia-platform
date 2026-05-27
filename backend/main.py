@@ -554,27 +554,36 @@ def generate_report(experiment_id: str):
                 margin-bottom: 8px;
             }}
 
+            .buttons-row {{
+                display: flex;
+                gap: 24px;
+                margin-top: 35px;
+                flex-wrap: wrap;
+            }}
+
             .btn {{
                 background: #76B900;
                 color: #000000;
-                border: none;
-                padding: 14px 24px;
+                border: 1px solid #76B900;
+                width: 280px;
+                height: 64px;
+                padding: 0 22px;
                 border-radius: 12px;
                 font-weight: bold;
+                font-size: 15px;
                 cursor: pointer;
-                margin-top: 20px;
                 text-decoration: none;
-                display: inline-block;
-                margin-right: 20px;
-                width: 280px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 text-align: center;
                 box-sizing: border-box;
+                line-height: 1.35;
             }}
 
-            .btn-secondary {{
-                background: #000000;
-                color: #76B900;
-                border: 1px solid #76B900;
+            .btn:hover {{
+                background: #8ad600;
+                border-color: #8ad600;
             }}
 
             .footer {{
@@ -620,17 +629,19 @@ def generate_report(experiment_id: str):
                     Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos
                 </p>
 
-                <a href="javascript:window.print()" class="btn">
-                    Descargar / Imprimir PDF
-                </a>
+                <div class="buttons-row">
+                    <a href="javascript:window.print()" class="btn">
+                        Descargar / Imprimir PDF
+                    </a>
 
-                <a href="/export-usd/{experiment_id}" target="_blank" class="btn btn-secondary">
-                    Descargar solo USDA
-                </a>
+                    <a href="/export-usd/{experiment_id}" target="_blank" class="btn">
+                        Descargar solo USDA
+                    </a>
 
-                <a href="{package_url}" target="_blank" class="btn">
-                    Descargar paquete Omniverse ZIP
-                </a>
+                    <a href="{package_url}" target="_blank" class="btn">
+                        Descargar paquete Omniverse ZIP
+                    </a>
+                </div>
             </div>
 
             <div class="card">
