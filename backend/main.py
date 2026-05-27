@@ -38,6 +38,7 @@ experiments_collection = db["experiments"]
 
 UPLOAD_DIR = "uploads"
 PACKAGE_DIR = "packages"
+DEFAULT_ASSETS_DIR = "default_assets"
 
 ROBOT_DIR = os.path.join(UPLOAD_DIR, "robots")
 ENVIRONMENT_DIR = os.path.join(UPLOAD_DIR, "environments")
@@ -47,6 +48,21 @@ os.makedirs(ROBOT_DIR, exist_ok=True)
 os.makedirs(ENVIRONMENT_DIR, exist_ok=True)
 os.makedirs(DATASET_DIR, exist_ok=True)
 os.makedirs(PACKAGE_DIR, exist_ok=True)
+
+DEFAULT_ROBOT_ASSETS = {
+    "TWINIA": os.path.join(DEFAULT_ASSETS_DIR, "robots", "twinia.usd"),
+    "HUMANOIDE": os.path.join(DEFAULT_ASSETS_DIR, "robots", "humanoide.usd"),
+    "BRAZO": os.path.join(DEFAULT_ASSETS_DIR, "robots", "brazo.usd"),
+    "Robot personalizado": None,
+}
+
+DEFAULT_ENVIRONMENT_ASSETS = {
+    "Parque urbano": os.path.join(DEFAULT_ASSETS_DIR, "environments", "parque_urbano.usd"),
+    "Hospital": os.path.join(DEFAULT_ASSETS_DIR, "environments", "hospital.usd"),
+    "Ciudad": os.path.join(DEFAULT_ASSETS_DIR, "environments", "ciudad.usd"),
+    "Universidad": os.path.join(DEFAULT_ASSETS_DIR, "environments", "universidad.usd"),
+    "Ambiente personalizado": None,
+}
 
 
 @app.get("/")
@@ -85,10 +101,44 @@ def save_uploaded_files(files, upload_dir, package_dir, relative_folder):
                 "package_path": package_path,
                 "relative_path": f"./{relative_folder}/{file.filename}",
                 "content_type": file.content_type,
+                "source": "uploaded_file",
             }
         )
 
     return saved_files
+
+
+def copy_default_asset_if_needed(selection, mapping, package_dir, upload_dir, relative_folder):
+    asset_path = mapping.get(selection)
+
+    if not asset_path:
+        return []
+
+    if not os.path.exists(asset_path):
+        print(f"[WARNING] Asset por defecto no encontrado: {asset_path}")
+        return []
+
+    os.makedirs(package_dir, exist_ok=True)
+    os.makedirs(upload_dir, exist_ok=True)
+
+    filename = os.path.basename(asset_path)
+
+    package_path = os.path.join(package_dir, filename)
+    upload_path = os.path.join(upload_dir, filename)
+
+    shutil.copy2(asset_path, package_path)
+    shutil.copy2(asset_path, upload_path)
+
+    return [
+        {
+            "filename": filename,
+            "path": upload_path,
+            "package_path": package_path,
+            "relative_path": f"./{relative_folder}/{filename}",
+            "content_type": "model/vnd.usd",
+            "source": "default_asset",
+        }
+    ]
 
 
 def build_usda(exp):
@@ -108,6 +158,7 @@ def Xform "TWINIA_Experiment"
     customData = {{
         string experiment_id = "{safe_usda_text(exp.get("experiment_id", ""))}"
         string created_at = "{safe_usda_text(exp.get("created_at", ""))}"
+
         string robot = "{safe_usda_text(exp.get("robot", ""))}"
         string ia_model = "{safe_usda_text(exp.get("ia", ""))}"
         string environment = "{safe_usda_text(exp.get("escenario", ""))}"
@@ -180,6 +231,8 @@ def Xform "TWINIA_Experiment"
     }}
 }}
 '''
+
+
 @app.post("/create-experiment")
 async def create_experiment(
     robot: str = Form(...),
@@ -246,6 +299,24 @@ async def create_experiment(
         package_dataset_dir,
         "datasets",
     )
+
+    if not saved_robot_files:
+        saved_robot_files = copy_default_asset_if_needed(
+            robot,
+            DEFAULT_ROBOT_ASSETS,
+            package_robot_dir,
+            robot_experiment_dir,
+            "robots",
+        )
+
+    if not saved_environment_files:
+        saved_environment_files = copy_default_asset_if_needed(
+            escenario,
+            DEFAULT_ENVIRONMENT_ASSETS,
+            package_environment_dir,
+            environment_experiment_dir,
+            "environments",
+        )
 
     robot_path = (
         saved_robot_files[0]["relative_path"]
@@ -318,18 +389,12 @@ async def create_experiment(
     with open(usda_path, "w", encoding="utf-8") as f:
         f.write(usda_content)
 
-    metadata_path = os.path.join(
-        package_metadata_dir,
-        "experiment_config.json"
-    )
+    metadata_path = os.path.join(package_metadata_dir, "experiment_config.json")
 
     with open(metadata_path, "w", encoding="utf-8") as f:
         json.dump(experiment, f, indent=4, ensure_ascii=False)
 
-    zip_base = os.path.join(
-        PACKAGE_DIR,
-        f"twinia_experiment_{experiment_id}"
-    )
+    zip_base = os.path.join(PACKAGE_DIR, f"twinia_experiment_{experiment_id}")
 
     zip_path = shutil.make_archive(
         zip_base,
@@ -397,6 +462,8 @@ async def export_usd(experiment_id: str):
             "Content-Disposition": f"attachment; filename=twinia_experiment_{experiment_id}.usda"
         },
     )
+
+
 @app.get("/experiments")
 def list_experiments():
     experiments = list(
@@ -435,21 +502,19 @@ def generate_report(experiment_id: str):
     cosmos_status = "Activado" if experiment.get("cosmos") == "true" else "Desactivado"
 
     robot_files_html = "".join(
-        f"<li>{file.get('filename', 'Archivo sin nombre')}</li>"
+        f"<li>{file.get('filename', 'Archivo sin nombre')} — {file.get('source', '')}</li>"
         for file in experiment.get("robot_files", [])
     ) or "<li>No se cargaron archivos de robot.</li>"
 
     environment_files_html = "".join(
-        f"<li>{file.get('filename', 'Archivo sin nombre')}</li>"
+        f"<li>{file.get('filename', 'Archivo sin nombre')} — {file.get('source', '')}</li>"
         for file in experiment.get("environment_files", [])
     ) or "<li>No se cargaron archivos de ambiente.</li>"
 
     dataset_files_html = "".join(
-        f"<li>{file.get('filename', 'Archivo sin nombre')}</li>"
+        f"<li>{file.get('filename', 'Archivo sin nombre')} — {file.get('source', '')}</li>"
         for file in experiment.get("dataset_files", [])
     ) or "<li>No se cargaron archivos de dataset.</li>"
-
-    package_url = f"/download-package/{experiment_id}"
 
     html = f"""
     <!DOCTYPE html>
@@ -571,12 +636,6 @@ def generate_report(experiment_id: str):
                 box-sizing: border-box;
             }}
 
-            .btn-secondary {{
-                background: #000000;
-                color: #76B900;
-                border: 1px solid #76B900;
-            }}
-
             .footer {{
                 margin-top: 40px;
                 padding-top: 20px;
@@ -624,12 +683,8 @@ def generate_report(experiment_id: str):
                     Descargar / Imprimir PDF
                 </a>
 
-                <a href="/export-usd/{experiment_id}" target="_blank" class="btn btn-secondary">
-                    Descargar solo USDA
-                </a>
-
-                <a href="{package_url}" target="_blank" class="btn">
-                    Descargar paquete Omniverse ZIP
+                <a href="/download-package/{experiment_id}" target="_blank" class="btn">
+                    Descargar USD Omniverse
                 </a>
             </div>
 
@@ -645,11 +700,11 @@ def generate_report(experiment_id: str):
                         <div class="value">{experiment.get("created_at", "")}</div>
                     </div>
                     <div class="item">
-                        <div class="label">Paquete ZIP</div>
+                        <div class="label">Paquete Omniverse</div>
                         <div class="value">twinia_experiment_{experiment_id}.zip</div>
                     </div>
                     <div class="item">
-                        <div class="label">USDA principal</div>
+                        <div class="label">Archivo principal</div>
                         <div class="value">experiment.usda</div>
                     </div>
                 </div>
@@ -704,10 +759,6 @@ def generate_report(experiment_id: str):
                         <div class="label">Épocas de entrenamiento</div>
                         <div class="value">{experiment.get("training_epochs", 0)}</div>
                     </div>
-                    <div class="item">
-                        <div class="label">Ruta relativa dataset</div>
-                        <div class="value">{experiment.get("dataset_path", "")}</div>
-                    </div>
                 </div>
             </div>
 
@@ -738,12 +789,12 @@ def generate_report(experiment_id: str):
             </div>
 
             <div class="card">
-                <h2>5. Archivos cargados e incluidos en el ZIP</h2>
+                <h2>5. Archivos incluidos en el paquete</h2>
 
-                <h3>Robot personalizado</h3>
+                <h3>Robot</h3>
                 <ul>{robot_files_html}</ul>
 
-                <h3>Ambiente personalizado</h3>
+                <h3>Ambiente</h3>
                 <ul>{environment_files_html}</ul>
 
                 <h3>Dataset / datos sintéticos</h3>
@@ -769,8 +820,9 @@ def generate_report(experiment_id: str):
                     Sim-to-Real.
                 </p>
                 <p>
-                    El nuevo paquete ZIP contiene el archivo USDA principal y los assets cargados por el usuario,
-                    organizados en carpetas relativas para facilitar su apertura en Omniverse / Isaac Sim.
+                    El botón Descargar USD Omniverse entrega un paquete ZIP con el archivo experiment.usda,
+                    los assets de robot, ambiente, dataset y metadatos necesarios para abrir el experimento
+                    en Omniverse / Isaac Sim.
                 </p>
             </div>
 
