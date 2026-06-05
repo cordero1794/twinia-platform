@@ -370,7 +370,7 @@ export default function Home() {
           <nav className="flex justify-between items-start mb-20">
             <div className="mt-60 ml-35">
               <h1 className="text-5xl md:text-6xl font-black tracking-wide leading-none">
-                TWINIA<span className="text-[#76B900]">.</span>IA
+                TWINIA<span className="text-[#76B900]">.</span>DSR
               </h1>
 
               <p className="text-lg text-zinc-300 mt-3">
@@ -381,7 +381,7 @@ export default function Home() {
             <div className="w-[710px] rounded-[2rem] border border-[#76B900]/40 bg-black/80 p-5 backdrop-blur">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-xl font-black">Tutorías IA</h3>
+                  <h3 className="text-xl font-black">Tutorías DSR</h3>
 
                   <p className="text-zinc-400 text-xs">
                     Omniverse · Isaac Sim · Cosmos
@@ -397,7 +397,7 @@ export default function Home() {
                 <iframe
                   className="w-full h-[320px]"
                   src={videoUrl}
-                  title="Tutorías IA"
+                  title="Tutorías DSR"
                   allowFullScreen
                 />
               </div>
