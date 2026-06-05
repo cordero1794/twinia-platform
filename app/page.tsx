@@ -410,7 +410,7 @@ export default function Home() {
                   }
                   className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-xl py-2 text-sm font-bold transition"
                 >
-                  Twinia.AI
+                  Twinia.DSR
                 </button>
                                 <button
                   type="button"
