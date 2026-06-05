@@ -624,7 +624,7 @@ def generate_report(experiment_id: str):
     <body>
         <div class="container">
             <div class="header">
-                <h1>TWINIA.AI</h1>
+                <h1>TWINIA.DSR</h1>
                 <p class="subtitle">
                     Reporte técnico experimental de IA física, gemelos digitales y datos sintéticos
                 </p>
